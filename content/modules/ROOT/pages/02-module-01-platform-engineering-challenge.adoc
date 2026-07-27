@@ -1,0 +1,77 @@
+= Module 1: The platform engineering challenge
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+Parasol Insurance is growing fast. New product lines, new teams, new developers -- but the platform team can't keep up. Every new team needs a custom CI/CD setup, their own namespace provisioning, and a weeks-long onboarding process. Developers spend more time filing tickets and waiting for access than they do writing code.
+
+Sound familiar?
+
+In this module, you'll explore the problem that platform engineering solves and understand the approach you'll take over the next two hours to build Parasol's Internal Developer Platform.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Articulate the developer experience challenges that platform engineering addresses
+* Describe the concept of golden paths and why they matter
+* Identify the OpenShift capabilities that form the foundation of an IDP
+* Understand the GitOps-driven approach you'll use to build the platform
+
+== The problem: developer experience at scale
+
+Platform engineering exists because the traditional model breaks down at scale. When every team assembles their own toolchain, you get:
+
+* **Inconsistent environments** -- "Works on my machine" becomes "works in my namespace"
+* **Slow onboarding** -- New developers wait days or weeks before they can commit code
+* **Ticket-driven workflows** -- Developers file tickets for namespaces, pipelines, and access instead of self-serving
+* **Security gaps** -- Without guardrails, teams skip scanning, signing, and compliance steps because the "official" process is too slow
+* **Knowledge silos** -- No single place to discover what services exist, who owns them, or how they connect
+
+At Parasol, these problems are real. The API team can't find documentation for the store service. The security team doesn't know which images are signed. New developers take two weeks to get productive.
+
+== The solution: an Internal Developer Platform
+
+An IDP doesn't replace your existing tools -- it unifies them behind a self-service interface. The platform team curates golden paths that make the secure, compliant path the easiest path. Developers get self-service access to:
+
+* **A software catalog** -- Discover services, APIs, and documentation in one place
+* **Software templates** -- Create new applications from pre-approved blueprints with CI/CD, security scanning, and GitOps deployment baked in
+* **Integrated tooling** -- See pipeline status, deployment topology, and logs without switching between consoles
+* **AI assistance** -- Ask questions about the catalog, get code snippets, and navigate the platform with natural language
+
+== What you'll build today
+
+Over the next two hours, you'll build Parasol's IDP using Red Hat Developer Hub -- an enterprise-grade developer portal based on the Backstage open source project. You'll deploy it on OpenShift and progressively configure it using a GitOps approach:
+
+[cols="1,3",options="header"]
+|===
+|Step |What you'll do
+
+|Deploy
+|Create a minimal Developer Hub instance using the Operator and Argo CD
+
+|Integrate
+|Add SSO authentication, CI/CD plugins, and Kubernetes topology view
+
+|Catalog
+|Register Parasol's services and APIs so developers can discover them
+
+|Templates
+|Import golden-path templates for self-service application creation
+
+|AI
+|Enable Lightspeed with MCP for AI-powered catalog exploration
+|===
+
+We have a configuration snapshot for each step of this journey, so you can focus on outcomes instead of getting bogged down in YAML and documentation.
+
+== Module summary
+
+You now understand the developer experience challenges that Parasol faces and the platform engineering approach you'll use to solve them. The key concepts to carry forward:
+
+* **Golden paths** make the right thing the easy thing -- pre-configured workflows that enforce standards while eliminating friction
+* **Red Hat Developer Hub** provides the unified portal that ties the platform together
+* **GitOps** is not just for applications -- you'll manage your IDP configuration the same way
+
+**Next steps:**
+In Module 2, you'll explore the OpenShift cluster to see the application platform capabilities that form your IDP's foundation.

@@ -1,0 +1,128 @@
+= Module 7: Add AI assistance with Lightspeed
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+Your Internal Developer Platform now has SSO, a populated catalog, and self-service templates. But developers still need to know where to look, what to search for, and how to navigate the platform. What if they could just ask?
+
+Red Hat Developer Hub Lightspeed provides an AI assistant built into the portal. Combined with Model Context Protocol (MCP), Lightspeed can query the software catalog, retrieve documentation, and provide contextual answers -- all from a chat interface.
+
+In this module, you'll enable Lightspeed as the final piece of Parasol's IDP.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Understand how Lightspeed integrates with Developer Hub
+* Explain how MCP connects the AI assistant to the software catalog
+* Enable Lightspeed by switching to the final configuration overlay
+* Use the AI assistant to explore the catalog with natural language
+
+== Exercise 1: Switch to the Lightspeed overlay
+
+The `overlays/05-lightspeed/` overlay adds:
+
+* **Lightspeed sidecar containers** in the Backstage CR (llama-stack for LLM inference, lightspeed-core for the service layer)
+* **RAG data** -- pre-built embeddings of Red Hat Developer Hub documentation for context-aware answers
+* **MCP server configuration** -- connects Lightspeed to the Backstage catalog API so it can query real catalog data
+* **Lightspeed dynamic plugins** -- frontend chat UI and backend API
+
+. In the **Argo CD** tab, click on your **developer-hub** Application
+
+. Click **App Details** and change the **Path** from:
++
+----
+overlays/04-templates
+----
++
+to:
++
+----
+overlays/05-lightspeed
+----
+
+. Click **Save** and wait for the sync to complete
++
+NOTE: This overlay adds sidecar containers to the Backstage pod. The pod will restart and take 2-3 minutes to become ready as it downloads the RAG data and starts the LLM inference service.
+
+=== Verify
+
+* Sync status: **Synced**
+* Health status: **Healthy** (may take 2-3 minutes)
+* Resource count increased by 2 (lightspeed-stack ConfigMap and llama-stack-secrets ExternalSecret)
+
+== Exercise 2: Use the AI assistant
+
+. Open the **Developer Hub** tab (you may need to refresh after the pod restart)
+
+. Look for the **Lightspeed** option in the sidebar menu and click on it
+
+. Try asking Lightspeed about the catalog:
++
+* _"Tell me about the Parasol Store API"_
+* _"What components are in the Parasol system?"_
+* _"Write a sample Java snippet to access the Parasol Store API"_
+
+. Notice how Lightspeed uses MCP to query the actual software catalog -- the answers reference real entities, not generic documentation
+
+. Try a suggested prompt from the pre-configured list if available
+
+=== Verify
+
+* The Lightspeed chat interface is available in the sidebar
+* Lightspeed responds to questions about catalog entities
+* Answers reference real Parasol services and APIs from the catalog
+
+== How it works
+
+Lightspeed runs as **sidecar containers** alongside the Developer Hub pod:
+
+* **llama-stack** -- Provides LLM inference using a pre-configured model. Includes RAG (Retrieval Augmented Generation) data from Red Hat Developer Hub product documentation.
+* **lightspeed-core** -- The service layer that coordinates between the chat UI, the LLM, and MCP tools.
+* **MCP (Model Context Protocol)** -- A standard protocol that gives the AI assistant structured access to the Backstage catalog API. When a user asks about a service, Lightspeed uses MCP to query the catalog and ground its response in real data.
+
+This architecture means Lightspeed answers are contextual -- it knows about your specific catalog entities, not just generic documentation.
+
+== Module summary
+
+Parasol's Internal Developer Platform is complete.
+
+**What you accomplished across all modules:**
+
+[cols="1,2,2",options="header"]
+|===
+|Module |What you did |What developers get
+
+|Deploy
+|Created a minimal Developer Hub via Argo CD
+|A running developer portal
+
+|SSO + Plugins
+|Added Keycloak auth, CI/CD, and topology plugins
+|Corporate login with integrated platform views
+
+|Catalog
+|Registered services, APIs, and systems
+|One place to discover everything
+
+|Templates
+|Imported golden-path templates
+|Self-service application creation in minutes
+
+|Lightspeed
+|Enabled AI with MCP catalog access
+|Natural language exploration of the platform
+|===
+
+**Key takeaways:**
+
+* **Platform engineering is about curation, not creation.** You didn't build new tools -- you integrated existing OpenShift capabilities behind a self-service interface.
+* **GitOps for the platform itself.** Your entire IDP configuration lives in Git, deployed as Kustomize overlays via Argo CD. Changes are reviewable, auditable, and reversible.
+* **Golden paths make the right thing easy.** Templates enforce your standards while eliminating developer friction.
+* **AI amplifies the platform.** Lightspeed with MCP gives developers a natural language interface to everything you've built.
+
+== What's next?
+
+This workshop covered the platform engineer's perspective. To see the developer side of the story -- how developers consume the IDP you just built -- check out the **Developer Track** of this workshop.
+
+For a deeper dive into the OpenShift application platform capabilities (service mesh, observability, supply chain security, AI workloads), explore the **Advanced Application Platform Demo**.

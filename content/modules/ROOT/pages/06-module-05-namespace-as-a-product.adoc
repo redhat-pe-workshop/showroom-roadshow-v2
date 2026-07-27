@@ -1,0 +1,239 @@
+= Module 5: Namespace as a product
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+When a new development team joins Parasol, the platform team doesn't just hand them a namespace and wish them luck. A properly provisioned namespace is a _product_ -- it comes with resource guardrails, access controls, and network policies baked in. Without these, one team's runaway pod can starve the cluster, any developer can poke around in namespaces they don't own, and there's no network isolation between workloads.
+
+In this module, you'll provision a managed namespace for a new dev team, then switch to a developer's perspective to see the guardrails in action.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Describe what a platform team provides when they provision a namespace for a development team
+* Explain how ResourceQuotas, LimitRanges, RoleBindings, and NetworkPolicies work together to create a managed environment
+* Experience resource limits from a developer's perspective -- including what happens when you exceed them
+
+You'll also get more practice deploying resources via Argo CD from the CLI, reinforcing the GitOps pattern from Module 3.
+
+== What goes into a managed namespace?
+
+A namespace on its own is just an empty box. A _managed_ namespace includes everything a team needs to work safely and independently:
+
+[cols="1,2",options="header"]
+|===
+|Resource |Purpose
+
+|**Namespace**
+|Logical isolation -- a boundary for resources, access, and policy
+
+|**ResourceQuota**
+|Caps total resource consumption (CPU, memory, pod count) across the entire namespace
+
+|**LimitRange**
+|Sets per-container defaults and maximums so developers don't need to guess what to request
+
+|**RoleBinding**
+|Grants the team `edit` access to their namespace -- and nothing else
+
+|**NetworkPolicy**
+|Controls which pods can talk to each other -- in this case, only pods within the same namespace
+|===
+
+Provisioning all of this manually for every team is exactly the kind of repetitive, error-prone work that platform engineering eliminates. Later in this workshop, you'll see how Developer Hub templates can automate this entirely.
+
+== Exercise 1: Review the manifests
+
+The `prerequisite-samples` repository contains a `managed-namespace/` directory with five manifests -- one for each resource listed above.
+
+. Open the **GitLab** tab and navigate to `prerequisite-samples/managed-namespace/`
+
+. Review the key files:
+
+.. `resource-quota.yaml` -- Caps the `dev-team-alpha` namespace at 5 pods, 512Mi total memory requests, and 1Gi total memory limits
+.. `limit-range.yaml` -- Sets a per-container maximum of 256Mi memory and defaults each container to 128Mi if no request is specified
+.. `role-binding.yaml` -- Grants the `edit` ClusterRole to users `dev1` and `dev2` in the `dev-team-alpha` namespace only
+.. `network-policy.yaml` -- Denies all inbound traffic except from pods within the same namespace
+
+These five files define a complete, self-contained environment for a development team.
+
+== Exercise 2: Deploy via Argo CD
+
+In Module 3, you created Argo CD Applications using the UI. This time, you'll use `oc` to apply the Application CR directly -- the same approach a platform team would use in automation.
+
+. In the **Terminal** tab, create the Argo CD Application:
++
+[source,bash,role="copypaste",subs="attributes+"]
+----
+cat <<'EOF' | oc apply -f -
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: managed-namespace
+  namespace: openshift-gitops
+spec:
+  project: pe-workshop
+  source:
+    repoURL: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/prerequisite-samples.git
+    targetRevision: main
+    path: managed-namespace
+  destination:
+    server: https://kubernetes.default.svc
+  syncPolicy:
+    automated:
+      selfHeal: true
+EOF
+----
++
+NOTE: This time you're using `automated` sync with `selfHeal: true`. The platform team wants the namespace configuration to be continuously enforced -- if someone manually removes the quota or network policy, Argo CD will restore it.
+
+. Verify the Application is synced:
++
+[source,bash,role="copypaste",subs="attributes+"]
+----
+oc get application managed-namespace -n openshift-gitops
+----
++
+The `SYNC STATUS` should show `Synced` and `HEALTH STATUS` should show `Healthy`.
+
+. Confirm the resources were created:
++
+[source,bash,role="copypaste",subs="attributes+"]
+----
+oc get namespace,resourcequota,limitrange,rolebinding,networkpolicy -n dev-team-alpha
+----
++
+You should see all five resources in place.
+
+=== Verify
+
+Switch to the **Argo CD** tab and find the `managed-namespace` Application. Click into it to see the resource tree -- the Namespace, ResourceQuota, LimitRange, RoleBinding, and NetworkPolicy should all be green and healthy.
+
+== Exercise 3: See it from a developer's perspective
+
+You've provisioned the namespace as a platform engineer. Now you'll switch to the `dev1` user to see what the experience looks like from the other side -- using the OpenShift web console instead of the CLI.
+
+. Open a **private/incognito browser window** and navigate to the OpenShift console:
++
+----
+https://console-openshift-console.{openshift_cluster_ingress_domain}
+----
+
+. Log in as `dev1` using the **developers** identity provider:
++
+* Username: `dev1`
+* Password: `{password}`
+
+. Once logged in, look at the **Project** dropdown at the top of the page. You should only see `dev-team-alpha` -- no `vault`, `openshift-gitops`, `rhdh`, or any other infrastructure namespace. The RoleBinding scoped `dev1` to this namespace only.
+
+. Select the `dev-team-alpha` project and navigate to **Administration > ResourceQuotas**
++
+You'll see the `dev-team-alpha-quota` with the limits the platform team defined: 5 pods, 512Mi total memory requests, and 1Gi total memory limits. The *Used* column shows current consumption.
+
+. Navigate to **Administration > LimitRanges**
++
+You'll see `dev-team-alpha-limits` with the per-container maximums and defaults. Any pod a developer creates in this namespace will be constrained by these limits.
+
+As a developer, you can _see_ the guardrails -- you know how much headroom you have before you hit them.
+
+== Exercise 4: Hit the guardrails
+
+Stay in the private browser window as `dev1`. You'll use the OpenShift console's built-in YAML editor to try deploying pods -- the same way a developer might work day-to-day.
+
+. Make sure the `dev-team-alpha` project is selected in the **Project** dropdown
+
+. Click the **+** (Import YAML) icon in the top navigation bar
+
+. Paste the following pod definition -- it requests 512Mi of memory, which is double the per-container maximum of 256Mi:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: greedy-pod
+  namespace: dev-team-alpha
+spec:
+  containers:
+    - name: httpd
+      image: registry.access.redhat.com/ubi9/httpd-24:latest
+      resources:
+        requests:
+          memory: 512Mi
+        limits:
+          memory: 512Mi
+----
+
+. Click **Create**
++
+The request is **rejected**. You'll see an error similar to:
++
+----
+maximum memory usage per Container is 256Mi, but limit is 512Mi
+----
++
+The LimitRange prevented a single container from consuming more than its allowed share.
+
+. Clear the editor and paste a corrected pod that fits within the limits:
++
+[source,yaml]
+----
+apiVersion: v1
+kind: Pod
+metadata:
+  name: good-pod
+  namespace: dev-team-alpha
+spec:
+  containers:
+    - name: httpd
+      image: registry.access.redhat.com/ubi9/httpd-24:latest
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+----
+
+. Click **Create** -- this time it succeeds.
+
+. Navigate to **Workloads > Pods** to confirm `good-pod` is in a `Running` state. The developer got their workload deployed -- they just had to stay within the guardrails the platform team defined.
+
+. Go back to **Administration > ResourceQuotas** and click on `dev-team-alpha-quota`. The *Used* column now reflects the resources consumed by the pod. The platform team can monitor this to understand how close teams are to their limits.
+
+You can now close the private browser window.
+
+== Clean up
+
+Remove the managed namespace Application.
+
+[source,bash,role="copypaste",subs="attributes+"]
+----
+oc delete application managed-namespace -n openshift-gitops
+----
+
+Verify the namespace and all its resources are gone:
+
+[source,bash,role="copypaste",subs="attributes+"]
+----
+oc get namespace dev-team-alpha
+----
+
+You should see `Error from server (NotFound)`. Argo CD cleaned up everything it managed -- the namespace, quota, limit range, role binding, network policy, and any pods the developer created within it.
+
+== Module summary
+
+You provisioned a managed namespace with resource guardrails, access controls, and network isolation -- then experienced those guardrails from a developer's perspective.
+
+**What you accomplished:**
+
+* Deployed a complete managed namespace using an Argo CD Application applied via `oc`
+* Logged into the OpenShift console as a developer and confirmed scoped access
+* Attempted to exceed resource limits and observed the rejection
+* Fixed the resource request and deployed successfully within the guardrails
+
+**Key takeaway:**
+A namespace is more than a name -- it's a product the platform team delivers to development teams. ResourceQuotas, LimitRanges, RoleBindings, and NetworkPolicies work together to create a safe, isolated, self-service environment. Today you provisioned this by creating manifests manually. Later, you'll see how Developer Hub templates can automate this entire process for every new team.
+
+**Next steps:**
+Next, you'll deploy Developer Hub itself -- the portal that ties all of these platform capabilities together behind a self-service interface.

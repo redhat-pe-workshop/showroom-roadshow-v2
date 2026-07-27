@@ -1,0 +1,120 @@
+= Module 5: Populate the software catalog
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+A developer portal is only as useful as the information it contains. Right now, Developer Hub is connected to the platform but the catalog is empty. Parasol's developers can't discover services, APIs, or documentation because nobody has registered them.
+
+In this module, you'll switch to the next overlay to register Parasol's existing services in the software catalog, making them discoverable to every developer in the organisation.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Understand the Backstage entity model (Components, Systems, APIs, Resources)
+* Register catalog entities by adding location URLs to the app-config
+* Navigate the software catalog to discover services and their relationships
+* See how catalog entities connect to CI/CD, topology, and documentation
+
+== The Backstage entity model
+
+Before registering entities, it's worth understanding how the catalog organises information:
+
+* **Component** -- A software unit (service, library, website) owned by a team
+* **API** -- An interface exposed by a component (REST, gRPC, event)
+* **System** -- A group of related components that form a product or capability
+* **Resource** -- Infrastructure dependencies (databases, queues, clusters)
+* **Domain** -- A business area that owns systems
+
+Each entity is defined in a `catalog-info.yaml` file that lives alongside the source code. Developer Hub reads these files and builds the catalog graph.
+
+== Exercise 1: Switch to the catalog entities overlay
+
+The `overlays/03-catalog-entities/` overlay adds `catalog.locations` entries to the app-config, pointing Developer Hub at Parasol's existing repositories.
+
+. In the **Argo CD** tab, click on your **developer-hub** Application
+
+. Click **App Details** and change the **Path** from:
++
+----
+overlays/02-sso-plugins
+----
++
+to:
++
+----
+overlays/03-catalog-entities
+----
+
+. Click **Save** and wait for the sync to complete
+
+=== Verify
+
+* Sync status: **Synced**
+* Health status: **Healthy**
+* The resource count remains the same (only the app-config ConfigMap content changed)
+
+== Exercise 2: Explore the catalog
+
+Developer Hub is now importing entities from Parasol's GitLab repositories. It may take 1-2 minutes for the initial catalog sync to complete.
+
+. Open the **Developer Hub** tab and navigate to the **Catalog** page
+
+. You should see Parasol's entities appearing:
++
+* Components representing services (e.g., Parasol Store)
+* APIs representing interfaces (e.g., Parasol Store API)
+
+. Click on a **Component** to explore its details:
++
+* **Overview** -- Ownership, lifecycle, system membership
+* **CI/CD** -- Pipeline runs from Tekton (if pipelines have run)
+* **Topology** -- Kubernetes deployment view showing pods, services, and routes
+* **Dependencies** -- How this component connects to APIs and other components
+
+. Click on an **API** to see its details:
++
+* API type and specification
+* Which components consume or provide this API
+
+. Use the **search bar** to find a specific service by name
+
+=== Verify
+
+* The Catalog page shows Parasol's entities
+* Clicking a Component shows the detail tabs (Overview, CI/CD, Topology)
+* The Topology tab shows Kubernetes resources for deployed components
+* APIs are linked to their providing and consuming Components
+
+== What changed?
+
+The only difference between this overlay and the previous one is the `catalog.locations` section in the app-config:
+
+[source,yaml]
+----
+catalog:
+  locations:
+    - type: url
+      target: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-store/blob/main/catalog-info.yaml
+    - type: url
+      target: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-store-api/blob/main/catalog-info.yaml
+----
+
+Each location points to a `catalog-info.yaml` file in a Git repository. Developer Hub reads these files, discovers the entities defined within, and builds the catalog graph. The GitLab discovery provider (configured in the previous overlay) also scans for additional `catalog-info.yaml` files across all repositories.
+
+== Module summary
+
+The software catalog is now populated with Parasol's services and APIs.
+
+**What you accomplished:**
+
+* Registered catalog entities by adding location URLs to the app-config
+* Explored the software catalog and its entity relationships
+* Saw CI/CD and topology data connected to catalog entities
+* Experienced the developer's view of service discovery
+
+**Key takeaway:**
+The software catalog is the foundation of the developer experience. Once entities are registered, every integration (CI/CD, topology, documentation) connects to them automatically. Developers can discover services without filing tickets or reading wikis.
+
+**Next steps:**
+In Module 6, you'll import a golden-path software template that lets developers create new applications with pre-configured CI/CD pipelines -- self-service at its best.

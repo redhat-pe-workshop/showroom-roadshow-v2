@@ -1,0 +1,31 @@
+= Workshop details
+:icons: font
+
+== Timing
+
+The workshop is split into seven modules and should take approximately **2 hours** to complete. You won't be writing code or hand-crafting YAML -- you'll mostly be deploying pre-built configurations and observing the results.
+
+== Your environment
+
+You have your own dedicated OpenShift cluster. The following dependencies are pre-installed to facilitate the workshop:
+
+* **OpenShift GitOps (Argo CD)** -- Declarative, Git-driven deployment
+* **OpenShift Pipelines (Tekton)** -- Cloud-native CI/CD
+* **Red Hat Developer Hub Operator** -- Backstage-based developer portal
+* **OpenShift DevSpaces** -- Cloud development workspaces
+* **HashiCorp Vault + External Secrets** -- Centralised secrets management
+* **Keycloak** -- Identity and access management
+* **GitLab** -- Source code management
+* **Quay** -- Container image registry
+
+=== Credentials
+
+* **OpenShift console**: {openshift_console_url}
+* **Username**: {user}
+* **Password**: {password}
+
+NOTE: The same credentials work for OpenShift, Argo CD (via OpenShift OAuth), Keycloak, GitLab, and Developer Hub.
+
+== How you'll work
+
+You will use a GitOps-driven configuration approach. This means you'll use OpenShift GitOps to deploy and manage platform components. Don't worry if this is new to you -- it'll be explained as you follow the content. It essentially boils down to a set of YAML files in a Git repository being continuously reconciled against OpenShift. We're taking a production-like approach in this workshop!

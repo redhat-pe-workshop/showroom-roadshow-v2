@@ -1,9 +1,7 @@
 ---
 type: showroom
 
-# Set the left column width to 30%
 default_width: 30
-# Persist the URL state so browser refresh doesn't reset the UI
 persist_url_state: true
 
 view_switcher:
@@ -11,23 +9,24 @@ view_switcher:
   default_mode: split
 
 tabs:
-  # OCP Console
-  # - name: OCP Console
-  #   url: 'https://console-openshift-console.${DOMAIN}'
+  - name: OCP Console
+    url: 'https://console-openshift-console.{openshift_cluster_ingress_domain}'
 
-  # Single terminal
-  # - name: Bastion
-  #   path: /wetty
-  #   port: 443
+  - name: Argo CD
+    url: 'https://openshift-gitops-server-openshift-gitops.{openshift_cluster_ingress_domain}'
 
-  # Vertical split terminals
-  # - name: Bastion
-  #   path: /wetty
-  #   port: 443
-  #   secondary_name: Bastion
-  #   secondary_path: /wetty
-  #   secondary_port: 443
+  - name: Developer Hub
+    url: 'https://backstage-developer-hub-rhdh.{openshift_cluster_ingress_domain}'
 
-  # External page
-  - name: Antora
-    url: 'https://antora.org'
+  - name: Vault
+    url: 'https://vault-vault.{openshift_cluster_ingress_domain}'
+
+  - name: Keycloak
+    url: 'https://sso.{openshift_cluster_ingress_domain}'
+
+  - name: GitLab
+    url: 'https://gitlab-gitlab.{openshift_cluster_ingress_domain}'
+
+  - name: Terminal
+    path: /wetty
+    port: 443

@@ -1,7 +1,7 @@
 ---
 site:
-  title: Showroom Template Demo
-  url: https://github.com/rhpds/showroom_template_nookbag
+  title: Platform Engineering Workshop
+  url: https://github.com/redhat-pe-workshop/showroom-v2
   start_page: modules::index.adoc
 
 content:
@@ -21,7 +21,6 @@ antora:
       script_stem: header-scripts
       mermaid_initialize_options:
         start_on_load: true
-    - require: '@andrew-jones/antora-tabs-extension'
 
 output:
   dir: ./www

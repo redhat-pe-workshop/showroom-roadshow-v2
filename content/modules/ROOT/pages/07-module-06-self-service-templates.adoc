@@ -1,0 +1,128 @@
+= Module 6: Enable self-service with templates
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+Parasol's developers can now discover existing services in the catalog. But what about creating new ones? Today, spinning up a new application means copying an old project, manually configuring CI/CD, and hoping you remembered all the security requirements.
+
+Software templates are the golden paths of platform engineering. They encode your organisation's best practices -- CI/CD pipelines, security scanning, GitOps deployment, proper catalog registration -- into a self-service workflow that any developer can use.
+
+In this module, you'll import a template and see how developers can create production-ready applications in minutes.
+
+== Learning objectives
+
+By the end of this module, you'll be able to:
+
+* Understand how software templates enable developer self-service
+* Import templates into Developer Hub via the app-config
+* Configure RBAC policies to control who can create and manage entities
+* Run a template to see the golden path in action
+
+== Exercise 1: Switch to the templates overlay
+
+The `overlays/04-templates/` overlay adds two things:
+
+* A **template location** in the app-config pointing to a pre-built Quarkus application template with secure CI/CD pipelines
+* A **RBAC policy ConfigMap** that controls permissions for platform engineers and developers
+
+. In the **Argo CD** tab, click on your **developer-hub** Application
+
+. Click **App Details** and change the **Path** from:
++
+----
+overlays/03-catalog-entities
+----
++
+to:
++
+----
+overlays/04-templates
+----
+
+. Click **Save** and wait for the sync to complete
+
+=== Verify
+
+* Sync status: **Synced**
+* Health status: **Healthy**
+* Resource count increased by 1 (the new RBAC policy ConfigMap)
+
+== Exercise 2: Explore the template
+
+. Open the **Developer Hub** tab and navigate to the **Create** page (or click the **Self-service** button in the global header)
+
+. You should see the imported software template. Click on it to review:
++
+* **Template name and description** -- What the template creates
+* **Input parameters** -- What the developer needs to provide (application name, Git organisation, etc.)
+* **Steps** -- What the template does behind the scenes (scaffolding code, creating a repository, configuring pipelines, registering the catalog entity)
+
+. Review the template's steps to understand the golden path it implements:
++
+.. Scaffolds a Quarkus application with pre-configured dependencies
+.. Creates a GitLab repository with the application code
+.. Configures Tekton pipelines for build, test, and image push
+.. Sets up GitOps deployment manifests
+.. Registers the new component in the Developer Hub catalog
+
+== Exercise 3: Run the template
+
+Now experience the golden path as a developer would.
+
+. Click **Choose** on the template to start the wizard
+
+. Fill in the parameters:
++
+* **Application name**: Choose a name (e.g., `parasol-claims`)
+* **Description**: A short description
+* Accept the defaults for other fields
+
+. Click through the wizard steps, reviewing what will be created
+
+. Click **Create** to execute the template
+
+. Watch the progress as the template:
++
+* Scaffolds the application code
+* Creates the GitLab repository
+* Configures the CI/CD pipeline
+* Registers the new component in the catalog
+
+. Once complete, click the links to explore:
++
+* The new **GitLab repository** with scaffolded code
+* The new **Catalog entity** in Developer Hub
+* The **Tekton pipeline** that was triggered automatically
+
+=== Verify
+
+* The template wizard completed successfully
+* A new GitLab repository was created with the application code
+* A new component appears in the Developer Hub catalog
+* A Tekton pipeline run was triggered (visible in the CI/CD tab)
+
+== What changed?
+
+This overlay added:
+
+* A **template catalog location** pointing at the pre-built template in GitLab
+* An **RBAC policy** that grants platform engineers full catalog management and both platform engineers and developers the ability to execute templates
+
+The RBAC policy ensures that developers can use templates to create applications but cannot modify the catalog structure or delete other teams' entities.
+
+== Module summary
+
+Developer self-service is now enabled through golden-path templates.
+
+**What you accomplished:**
+
+* Imported a software template into Developer Hub
+* Configured RBAC policies for platform engineers and developers
+* Ran a template to create a new application with CI/CD, GitOps, and catalog registration
+* Experienced the developer's self-service workflow
+
+**Key takeaway:**
+Software templates are where platform engineering delivers its biggest impact. They encode best practices into a repeatable, self-service workflow. Developers get new applications in minutes instead of weeks, and every application follows your organisation's standards by default.
+
+**Next steps:**
+In Module 7, you'll add the final piece -- AI-powered assistance with Lightspeed and MCP, giving developers a natural language interface to the catalog and platform.
