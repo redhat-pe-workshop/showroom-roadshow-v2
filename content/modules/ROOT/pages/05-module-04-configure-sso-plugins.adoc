@@ -12,18 +12,21 @@ In this module, you'll configure Developer Hub with SSO authentication, platform
 By the end of this module, you'll be able to:
 
 * Configure SSO authentication for Developer Hub using Keycloak as an OIDC provider
-* Enable dynamic plugins for CI/CD, GitOps, and Kubernetes topology
+* Enable dynamic plugins for CI/CD, GitOps, and Kubernetes integrations
 * Understand how ExternalSecrets connect Vault credentials to Developer Hub -- the same pattern you learned in Module 4, now applied at scale
 
-You'll also see how Kustomize overlays let you layer these additions on top of the base configuration without modifying the original files.
+You'll also see how Kustomize overlays let you layer these additions on top of the base configuration without modifying the original files - this is just a little bonus learning, but isn't required when you embark on your own IDP journey.
 
 == Exercise 0: Vault, Keycloak, and External Secrets
 
-Before you flip the switch, take a look at the pieces that have been pre-configured for this module. You've already seen Vault in Module 4 -- now you'll see the Keycloak side and understand how they connect to Developer Hub through ExternalSecrets.
-
 NOTE: We've done the prerequisite work for you here. The key focus of this workshop is to learn the high-level configuration steps and understand the benefit you can provide to developer teams with Red Hat Developer Hub. You'll leave this workshop with an excellent template to start building out your own internal developer portal.
 
+Before you flip the switch, take a look at the pieces that have been pre-configured for this module. You've already seen Vault in Module 4 -- now you'll see the Keycloak side and understand how they connect to Developer Hub through ExternalSecrets.
+
+
 === Keycloak: the identity provider
+
+TIP: Red Hat Build of Keycloak is used as an identity provider in this workshop. A complete list of supported identity providers can be found in the https://docs.redhat.com/en/documentation/red_hat_developer_hub/1.10/html/authentication_in_red_hat_developer_hub/index[Developer Hub documentation].
 
 . Open the **Keycloak** tab
 
@@ -45,7 +48,9 @@ NOTE: We've done the prerequisite work for you here. The key focus of this works
 
 . Navigate to `kv` > `secrets/` > `keycloak/` > `client-secret`
 +
-You'll see the `clientId` and `clientSecret` values that Developer Hub needs to connect to Keycloak. These are the same credentials referenced by the `backstage` client you just saw in Keycloak.
+You'll see the `clientId` and `clientSecret` values that Developer Hub needs to connect to Keycloak. These are the same credentials referenced by the `backstage` client you just saw in Keycloak. 
+
+The workshop has pre-populated the credentials in Vault to save time, but a platform team will typically add them to Vault as necessarry.
 
 === ExternalSecrets: the bridge
 
@@ -81,15 +86,15 @@ The file contains only references -- no sensitive values.
 |A random secret used to secure Developer Hub's backend
 |===
 
-Every credential Developer Hub needs is pulled from Vault automatically. Nothing is hardcoded in Git.
+Every credential Developer Hub needs is pulled from Vault automatically. Nothing is hardcoded in Git. Rotating the credentials and updating them in Vault will result in any ExternalSecret reference also updating the Secret used by Developer Hub.
 
 == Exercise 1: Switch to the SSO and plugins overlay
 
 The `overlays/02-sso-plugins/` directory builds on the base configuration by adding:
 
 * **OIDC authentication** via Keycloak -- users log in with their corporate identity
-* **ExternalSecrets** -- credentials for GitLab, Argo CD, and Kubernetes are pulled from Vault automatically
 * **Dynamic plugins** -- Tekton pipeline view, Argo CD deployment status, Kubernetes topology, GitLab integration, and a global header with links to platform tools
+* **ExternalSecrets** -- credentials for GitLab, Argo CD, and Kubernetes are pulled from Vault automatically, and used by Developer Hub plugins
 
 You'll update the Argo CD Application using `oc patch` from the terminal -- the same way a platform engineer would in automation or a script.
 
@@ -121,7 +126,7 @@ Press `Ctrl+C` once the `SYNC STATUS` shows `Synced` and `HEALTH STATUS` shows `
 The new resources include:
 +
 * 5 ExternalSecrets (the ones you reviewed in Exercise 0)
-* 1 PersistentVolumeClaim for dynamic plugins
+* 1 PersistentVolumeClaim for caching dynamic plugins (making future Pod rollouts faster)
 * 1 Secret for the npm registry
 * Updated ConfigMaps for app-config and dynamic plugins
 * Updated Backstage CR with secret references
@@ -132,13 +137,13 @@ Open the **Argo CD** tab and click into the `developer-hub` Application:
 
 * Sync status: **Synced**
 * Health status: **Healthy**
-* Resource count increased from 3 to approximately 10
+* Managed resource count increased
 
 == Exercise 2: Log in with SSO
 
 Developer Hub is now configured with Keycloak OIDC authentication. Guest access is disabled.
 
-. Open the **Developer Hub** tab (you may need to refresh)
+. Open the **Developer Hub** tab and click the refresh icon at the top
 
 . You should see a login page with an **OIDC** sign-in option
 
@@ -155,17 +160,22 @@ Developer Hub is now configured with Keycloak OIDC authentication. Guest access 
 
 == Exercise 3: Explore the plugins
 
-With dynamic plugins enabled, Developer Hub now connects to the platform services running on the cluster. Although the catalog is still empty, the integrations are active and ready.
+With dynamic plugins enabled, Developer Hub now connects to the platform services running on the cluster.
 
 . Click on the **Application Launcher** icon (grid icon) in the global header
 +
 You'll see quick links to DevSpaces, GitLab, and Quay -- the platform tools your developers will use daily.
 
-. The Catalog is still empty, but the integrations are working behind the scenes:
+. Navigate to **Catalog** and switch the **Kind** filter to **User** or **Group**. You should see entities already appearing:
 +
-* **Keycloak user sync** -- Developer Hub is importing users and groups from Keycloak. Navigate to **Settings** and you should see your user identity.
+* **Keycloak user sync** -- Developer Hub is importing users and groups from Keycloak automatically. The `dev1`, `dev2`, `pe1`, and `pe2` users and their groups (`developers`, `platformengineers`) should be visible as catalog entities.
+
+. The Component catalog is still empty -- you haven't registered any services yet. But the remaining integrations are active and ready:
++
 * **GitLab discovery** -- Developer Hub is scanning GitLab for repositories containing `catalog-info.yaml` files (it won't find any yet).
 * **Argo CD and Tekton plugins** -- Ready to display CI/CD data once catalog entities are registered.
+
+. Navigate to **Settings** and confirm your user identity is shown -- this is your Keycloak profile, synced into Developer Hub.
 
 === Verify
 

@@ -32,7 +32,7 @@ The *base/* folder contains three files that are used to configure an instance o
 
 TIP: These files have inline comments that explain specific sections. It's recommended that you review each file and the comments to gain a better understanding of how they are used to configure Red Hat Developer Hub.
 
-NOTE: Backstage utilizes plugins to extend it with specific features and functionality. For example, if you'd like to show the Jenkins build status for your applications in Developer Hub you'd install the Jenkins plugin. Upstream Backstage requires source code changes to add plugins. Developer Hub uses a dynamic plugin system to install and configure plugins entirely through configuration files. 
+NOTE: Backstage utilizes plugins to extend it with specific features and functionality. For example, if you'd like to show the Jenkins build status for your applications in Developer Hub you'd install the Jenkins plugin. Upstream Backstage requires source code changes to add plugins. Developer Hub uses a dynamic plugin system to install and configure plugins entirely through configuration files at runtime. 
 
 These three files are all you need to deploy and start customizing your internal developer portal using the Red Hat Developer Hub Operator.
 
@@ -127,7 +127,9 @@ image::m3/rhdh-empty.png[Red Hat Developer Hub landing page,link=self,window=bla
 * The **Catalog** page shows no *Component* entities -- you haven't registered anything yet
 * The **Self-Service** page (accessed using the plus icon in the top navbar) shows no templates -- you haven't imported any yet
 * The sidebar is minimal -- no additional plugins are configured
-
++
+TIP: Backstage -- and therefore Developer Hub -- uses Entities to represent Components, APIs, Groups, Users, and business Domains in the built-in Software Catalog. These Entities have relationships that can be viewed as a graph, or read by AI Agents to understand your businesses software architecture. You'll see this in action in later modules.
++
 This is the starting point. A functional Developer Hub instance deployed with a single Backstage custom resource and a basic app-config. In the next modules, you'll progressively add authentication, integrations, catalog entities, and templates.
 
 === Verify
