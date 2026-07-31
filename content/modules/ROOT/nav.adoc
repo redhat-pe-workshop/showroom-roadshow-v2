@@ -1,5 +1,6 @@
 * xref:index.adoc[Welcome]
 * xref:01-details.adoc[Workshop details]
+* xref:00-credentials.adoc[Credentials and URLs]
 * xref:02-module-01-platform-engineering-challenge.adoc[1. The platform engineering challenge]
 * xref:03-module-02-explore-application-platform.adoc[2. Explore the application platform]
 * xref:04-module-03-gitops-fundamentals.adoc[3. GitOps Fundamentals]

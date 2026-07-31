@@ -45,7 +45,12 @@ This module gives you the hands-on feel for that loop before you use it for the 
 
 A repository named `prerequisite-samples` has been pre-created in your GitLab instance. It contains a `gitops/` directory with three Kubernetes manifests. These manifests define a basic HTTP server deployment.
 
-. Open the **GitLab** tab and navigate to `prerequisite-samples/gitops/`
+. Open the **GitLab** tab and log in if prompted:
++
+* Username: `{openshift_cluster_user_name}`
+* Password: `{common_password}`
+
+. Navigate to `prerequisite-samples/gitops/`
 +
 You should see three files:
 +
@@ -70,8 +75,8 @@ Now you'll tell Argo CD to deploy these manifests by creating an https://argo-cd
 . Open the **Argo CD** tab and log in if prompted:
 +
 * Click **Log in via OpenShift**, select the **developers** identity provider
-* Username: `{user}`
-* Password: `{password}`
+* Username: `{openshift_cluster_user_name}`
+* Password: `{common_password}`
 
 . Before you create anything, take a look at the Applications already on the dashboard. You'll see entries like `app-of-apps`, `gitlab`, `keycloak`, `vault`, and others.
 +

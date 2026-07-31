@@ -30,10 +30,13 @@ TIP: Red Hat Build of Keycloak is used as an identity provider in this workshop.
 
 . Open the **Keycloak** tab
 
-. Log in to the Keycloak admin console:
+. Log in to the Keycloak admin console. Retrieve the admin credentials from the terminal (see the xref:00-credentials.adoc[Credentials and URLs] page for the commands):
 +
-* Username: `admin`
-* Password: `{password}`
+[source,bash,role="copypaste",subs="attributes+"]
+----
+oc get secret keycloak-initial-admin -n keycloak -o jsonpath='{.data.username}' | base64 -d && echo
+oc get secret keycloak-initial-admin -n keycloak -o jsonpath='{.data.password}' | base64 -d && echo
+----
 
 . In the top-left dropdown, select the **backstage** realm. This realm has been pre-configured with:
 +
@@ -149,8 +152,8 @@ Developer Hub is now configured with Keycloak OIDC authentication. Guest access 
 
 . Log in with your credentials:
 +
-* Username: `{user}`
-* Password: `{password}`
+* Username: `{openshift_cluster_user_name}`
+* Password: `{common_password}`
 
 . Once logged in, notice what's changed:
 +

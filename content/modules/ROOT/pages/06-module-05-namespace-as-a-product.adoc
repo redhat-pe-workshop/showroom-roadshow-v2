@@ -123,7 +123,7 @@ https://console-openshift-console.{openshift_cluster_ingress_domain}
 . Log in as `dev1` using the **developers** identity provider:
 +
 * Username: `dev1`
-* Password: `{password}`
+* Password: `{common_password}`
 
 . Once logged in, look at the **Project** dropdown at the top of the page. You should only see `dev-team-alpha` -- no `vault`, `openshift-gitops`, `rhdh`, or any other infrastructure namespace. The RoleBinding scoped `dev1` to this namespace only.
 
