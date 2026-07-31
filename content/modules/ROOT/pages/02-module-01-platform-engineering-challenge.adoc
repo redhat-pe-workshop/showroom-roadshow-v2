@@ -7,7 +7,7 @@ Parasol Insurance is growing fast. New product lines, new teams, new developers 
 
 Sound familiar?
 
-In this module, you'll explore the problem that platform engineering solves and understand the approach you'll take over the next two hours to build Parasol's Internal Developer Platform.
+In this module, you'll explore the problem that platform engineering solves and understand the approach you'll take throughout this workshop to build Parasol's Internal Developer Platform (IDP).
 
 == Learning objectives
 

@@ -21,7 +21,7 @@ You have your own dedicated OpenShift cluster. The following dependencies are pr
 === Credentials
 
 * **OpenShift console**: {openshift_cluster_console_url}
-* **Username**: {openshift_cluster_user_name}
+* **Username**: pe1
 * **Password**: {common_password}
 
 NOTE: The same credentials work for OpenShift, Argo CD (via OpenShift OAuth), Keycloak, GitLab, and Developer Hub.

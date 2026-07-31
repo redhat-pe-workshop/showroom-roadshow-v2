@@ -47,7 +47,7 @@ A repository named `prerequisite-samples` has been pre-created in your GitLab in
 
 . Open the **GitLab** tab and log in if prompted:
 +
-* Username: `{openshift_cluster_user_name}`
+* Username: `pe1`
 * Password: `{common_password}`
 
 . Navigate to `prerequisite-samples/gitops/`
@@ -70,19 +70,19 @@ Argo CD can apply a directory of plain manifests directly. Tools such as Helm an
 
 == Exercise 2: Create an Argo CD Application
 
-Now you'll tell Argo CD to deploy these manifests by creating an https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#applications[Application CR].
+Now you'll instruct Argo CD to deploy these manifests by creating an https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#applications[Application CR]. An Application CR allows you to define the parameters used to control how Argo CD manages the underlying resources. For example, you could disable **Self Healing** so that Argo CD will not make any changes when a resource is modified on the underlying cluster causing it to differ from the manifest in Git -- this setting often disabled during development or debugging.
 
 . Open the **Argo CD** tab and log in if prompted:
 +
 * Click **Log in via OpenShift**, select the **developers** identity provider
-* Username: `{openshift_cluster_user_name}`
+* Username: `pe1`
 * Password: `{common_password}`
 
 . Before you create anything, take a look at the Applications already on the dashboard. You'll see entries like `app-of-apps`, `gitlab`, `keycloak`, `vault`, and others.
 +
 These aren't left over from a previous exercise -- they _are_ the workshop environment. The lab authors manage the entire cluster infrastructure using the same GitOps approach you're about to learn. Every service you've used so far (GitLab, Argo CD itself, the identity provider) was deployed and is maintained by an Argo CD Application. What you're about to do is exactly the same pattern, just with your own workload.
 +
-NOTE: The user you've logged in as can view, but not edit/delete the existing Argo CD Applications. You have write access in a separate Argo CD Project, separate from the core workshop infrastructure.   
+NOTE: The user you've logged in as can view, but not edit/delete the existing Argo CD Applications. You have write access in a separate `pe-workshop` Argo CD Project, separate from the core workshop infrastructure.   
 
 . Click **+ New App** at the top of the UI
 
@@ -119,7 +119,7 @@ NOTE: The user you've logged in as can view, but not edit/delete the existing Ar
 
 . Click **Create**
 
-The Application appears in the Argo CD dashboard with a status of **OutOfSync**. This is expected -- you told Argo CD _what_ to deploy but haven't told it to _deploy_ yet. Argo CD would have applied the resources by now if you had set *Sync Policy* to `Automatic` in the Application configuration.
+The Application appears in the Argo CD dashboard with a status of **OutOfSync**. This is expected -- you told Argo CD _what_ to deploy but haven't told it to _deploy_ yet. Argo CD would have applied the resources by now if you had set *Sync Policy* to `Automatic` instead of `Manual` in the Application configuration.
 
 === Sync the Application
 
@@ -153,7 +153,7 @@ The status should change from **OutOfSync** to **Synced**, and the health should
 oc get route sample-app -n prerequisite-samples -o jsonpath='https://{.spec.host}{"\n"}'
 ----
 
-You should see the default Red Hat httpd test page. A simple application, deployed entirely from manifests stored and versioned in Git.
+You should see the default Red Hat httpd test page. That's it! An application deployed entirely from manifests stored and versioned in Git.
 
 == Exercise 3: Modify in Git, sync the change
 
@@ -175,9 +175,9 @@ spec:
 
 . Switch to the **Argo CD** tab. Within a few moments, the `sample-app` Application status will change to **OutOfSync**
 +
-Argo CD has detected that the desired state in Git (2 replicas) no longer matches the actual state on the cluster (1 replica).
+NOTE: Click the *Refresh* button to force Argo CD to check the Git repository for changes if it takes too long to auto detect.
 +
-NOTE: You can click the *Refresh* button to force Argo CD to check the Git repository for changes.
+Argo CD has detected that the desired state in Git (2 replicas) no longer matches the actual state on the cluster (1 replica).
 
 . Click into the Application. You'll see a yellow **OutOfSync** indicator on the Deployment resource.
 
@@ -213,7 +213,7 @@ oc get pods -n prerequisite-samples -l app=sample-app
 +
 You should see three pods in a `Running` state.
 
-. Switch to the **Argo CD** tab. After a short interval (up to 3 minutes), the Application status changes to **OutOfSync**.
+. Switch to the **Argo CD** tab. After a short interval, the Application status changes to **OutOfSync**.
 +
 Argo CD has detected that the cluster state (3 replicas) no longer matches the desired state in Git (2 replicas). The _cluster_ is wrong, not Git.
 
@@ -250,13 +250,14 @@ Although you've been using the Argo CD UI, an Argo CD Application is just a Kube
 ----
 oc get application sample-app -n openshift-gitops
 ----
-
 . Delete it:
 +
 [source,bash,role="copypaste",subs="attributes+"]
 ----
 oc delete application sample-app -n openshift-gitops
 ----
++
+WARNING: Do not attempt to delete any other Argo CD Application(s) using the `oc` CLI -- this could break your workshop environment.
 +
 Argo CD will remove the Application _and_ the resources it manages (Deployment, Service, Route) from the cluster.
 

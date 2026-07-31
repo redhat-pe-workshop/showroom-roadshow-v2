@@ -3,7 +3,7 @@
 :toc: macro
 :toclevels: 1
 
-Before you build the developer portal, you need to understand what's already running on the cluster. OpenShift is more than a container runtime -- it's an application platform with integrated CI/CD, GitOps, developer workspaces, and secrets management. These capabilities form the foundation of your IDP.
+Before you build the developer portal, you need to understand what's already running on the cluster. OpenShift is more than a container runtime -- it's an **application platform** with integrated CI/CD, GitOps, Cloud Development Environments (CDE), and secrets management. These capabilities form the foundation of your own internal developer platform.
 
 In this module, you'll log into the OpenShift console and Argo CD to see what's available and understand how the infrastructure is managed.
 
@@ -18,27 +18,27 @@ By the end of this module, you'll be able to:
 
 == Exercise 1: Explore OpenShift
 
-The OpenShift cluster has been pre-configured with operators that provide the building blocks for your IDP. You don't need to install any of these -- they're ready to use. Your job as the platform engineer is to wire them together through Developer Hub.
+The OpenShift cluster has been pre-configured with operators that provide the building blocks for your IDP. You don't need to install any of these during the workshop -- they're ready to use. Your job as the platform engineer is to wire them together through Developer Hub.
 
 NOTE: These specific tools are used in this workshop, but the concepts apply regardless of your CI/CD, GitOps, or secrets management provider.
 
-. Open the **OCP Console** tab and log in with your credentials:
+. Open the **OCP Console** tab, select the **developers** option, and log in with your credentials:
 +
-* Username: `{openshift_cluster_user_name}`
+* Username: `pe1`
 * Password: `{common_password}`
 
-. Navigate to **Operators > Installed Operators** and verify the following are installed:
+. Navigate to **Ecosystem > Installed Operators** using the left-hand and verify the following are installed:
 +
 * **Red Hat OpenShift GitOps** -- Argo CD for declarative deployments
 * **Red Hat OpenShift Pipelines** -- Tekton for CI/CD pipelines
-* **Red Hat OpenShift DevSpaces** -- Cloud development workspaces
+* **Red Hat OpenShift Dev Spaces** -- Cloud development workspaces
 * **Red Hat Developer Hub** -- The Backstage-based developer portal you'll configure
 
 . Note the other operators present on the cluster. These provide additional platform capabilities:
 +
 * **Red Hat Quay** -- Container image registry
 * **External Secrets Operator** -- Syncs secrets from Vault to Kubernetes
-* **Red Hat Advanced Cluster Security** -- Container image scanning and policy enforcement
+* **Streams for Apache Kafka** -- Deploy and manage Apache Kafka clusters
 
 === Verify
 
@@ -52,23 +52,23 @@ Argo CD manages the cluster infrastructure using a pattern called **app-of-apps*
 
 . Log in using **Log in via OpenShift**, and selecting the **developers** identity provider.
 +
-* Username: `{openshift_cluster_user_name}`
+* Username: `pe1`
 * Password: `{common_password}`
 +
 You may need to authorise access when prompted.
 
-. Once logged in, explore the Applications view. You'll see the infrastructure apps that were deployed by the platform team:
+. Once logged in, explore the Applications view. You'll see the infrastructure apps that were deployed by the workshop environment:
 +
 * `app-of-apps` -- The parent Application
 * `gitlab`, `keycloak`, `vault`, `quay` -- Supporting services
 * `developer-hub-prereqs` -- The Developer Hub operator subscription
-* `pe-workshop-argocd` -- Your workshop project (just created)
+* `pe-workshop-argocd` -- Your workshop https://argo-cd.readthedocs.io/en/stable/user-guide/projects/[Project] with scoped permissions
 
 . Click on **`app-of-apps`** to see the dependency graph. This shows how all infrastructure components are orchestrated.
 +
-NOTE: You have **read-only** access to the `default` project. You can view but not modify any infrastructure Applications.
+NOTE: You have **read-only** access to the `default` project in Argo CD. You can view but not modify any infrastructure Applications that we've pre-deployed. By letting you view these, you can see that we're not just telling you to use GitOps -- we use it too!
 
-. Click **Settings > Projects** in the left sidebar. You should see the **pe-workshop** project. This is where you'll create your Developer Hub Application in the next module.
+. Click **Settings > Projects** in the left sidebar. You should see the **pe-workshop** project. This is the GitOps Project you'll use to manage your Developer Hub and other deployments in future modules.
 
 === Verify
 

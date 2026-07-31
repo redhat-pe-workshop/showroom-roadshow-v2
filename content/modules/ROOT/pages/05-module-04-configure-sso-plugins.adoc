@@ -152,7 +152,7 @@ Developer Hub is now configured with Keycloak OIDC authentication. Guest access 
 
 . Log in with your credentials:
 +
-* Username: `{openshift_cluster_user_name}`
+* Username: `pe1`
 * Password: `{common_password}`
 
 . Once logged in, notice what's changed:
