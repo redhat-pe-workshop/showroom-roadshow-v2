@@ -3,9 +3,11 @@
 :toc: macro
 :toclevels: 1
 
-When a new development team joins Parasol, the platform team doesn't just hand them a namespace and wish them luck. A properly provisioned namespace is a _product_ -- it comes with resource guardrails, access controls, and network policies baked in. Without these, one team's runaway pod can starve the cluster, any developer can poke around in namespaces they don't own, and there's no network isolation between workloads.
+When new developers join Parasol, the platform team doesn't just hand them a namespace and wish them luck. A namespace is little more than a cluster-wide label. It logically groups cluster entities but imposes nothing. Without explicit policy, any authenticated user can read or change resources, a container could consume all of a node's memory, and every pod in such a lawless namespace can try to reach every other pod in the cluster over the network.
 
-In this module, you'll provision a managed namespace for a new dev team, then switch to a developer's perspective to see the guardrails in action.
+The platform team thinks of a properly provisioned namespace as a _product_ that includes the resource limits, access controls, and network policies that frame the organizational boundaries of a namespace with effective guardrails.
+
+In this module, you'll provision a managed namespace for a new dev team, then switch to a developer's perspective to see how limits and policies are enforced.
 
 == Learning objectives
 
