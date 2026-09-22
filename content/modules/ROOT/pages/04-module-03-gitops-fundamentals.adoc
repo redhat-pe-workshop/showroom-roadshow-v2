@@ -136,6 +136,8 @@ NOTE: The user you've logged in as can view, but not edit/delete the existing Ar
 
 The Application appears in the Argo CD dashboard with a status of **OutOfSync**. This is expected -- you told Argo CD _what_ to deploy but haven't told it to _deploy_ yet. Argo CD would have applied the resources by now if you had set *Sync Policy* to `Automatic` instead of `Manual` in the Application configuration.
 
+You've set up a `Manual` Sync Policy here to slow the process enough to see it at each stage: `OutOfSync` detection, synchronization, and the resources created or changed to reconcile the workload with the desired state. In a later module, you'll reconfigure for the `Automatic` Sync Policy of production deployments.
+
 === Sync the Application
 
 . Click on the **sample-app** Application tile
