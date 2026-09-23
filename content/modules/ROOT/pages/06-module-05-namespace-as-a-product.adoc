@@ -47,18 +47,18 @@ Provisioning all of this manually for every team is exactly the kind of repetiti
 
 == Exercise 1: Review the manifests
 
-The `prerequisite-samples` repository contains a `managed-namespace/` directory with five manifests -- one for each resource listed above.
+The *prerequisite-samples* repository contains a `managed-namespace/` directory with five manifests -- one for each resource listed above.
 
-. Open the **GitLab** tab and navigate to `prerequisite-samples/managed-namespace/`
-
+. Open the **GitLab** tab and navigate to *rhdh/prerequisite-samples/* and open the `managed-namespace/` folder
++
+image::ns-aas/ns-files.png["Namespace as a Service files in GitLab",link=self,window=blank,align="center",width=700,title="Namespace as a Service files in GitLab"]
 . Review the key files:
-
 .. `resource-quota.yaml` -- Caps the `dev-team-alpha` namespace at 5 pods, 512Mi total memory requests, and 1Gi total memory limits
 .. `limit-range.yaml` -- Sets a per-container maximum of 256Mi memory and defaults each container to 128Mi if no request is specified
 .. `role-binding.yaml` -- Grants the `edit` ClusterRole to users `dev1` and `dev2` in the `dev-team-alpha` namespace only
 .. `network-policy.yaml` -- Denies all inbound traffic except from pods within the same namespace
 
-These five files define a complete, self-contained environment for a development team.
+These files define a complete, self-contained environment for a development team.
 
 == Exercise 2: Deploy via Argo CD
 
@@ -111,16 +111,20 @@ oc get resourcequota,limitrange,rolebinding,networkpolicy -n dev-team-alpha
 +
 You should see all five resources in place.
 
+
 === Verify
 
 Switch to the **Argo CD** tab and find the `managed-namespace` Application. Click into it to see the resource tree -- the Namespace, ResourceQuota, LimitRange, RoleBinding, and NetworkPolicy should all be green and healthy.
+
+image::ns-aas/argocd-status.png["Argo CD UI showing the managed-namespace resources",link=self,window=blank,align="center",width=700,title="Argo CD UI showing the managed-namespace resources"]
 
 == Exercise 3: See it from a developer's perspective
 
 You've provisioned the namespace as a platform engineer. Now you'll switch to the `dev1` user to see what the experience looks like from the other side -- using the OpenShift web console instead of the CLI.
 
-. Open a **private/incognito browser window** and navigate to the OpenShift console:
+. Open a **private/incognito browser window** and navigate to the OpenShift Web Console using this URL:
 +
+[source,text,role="copypaste",subs="attributes+"]
 ----
 https://console-openshift-console.{openshift_cluster_ingress_domain}
 ----
@@ -130,9 +134,11 @@ https://console-openshift-console.{openshift_cluster_ingress_domain}
 * Username: `dev1`
 * Password: `{common_password}`
 
-. Once logged in, you should see your **Projects** list. You should only see `dev-team-alpha` and `parasol` related Projects -- no `vault`, `openshift-gitops`, `rhdh`, or any other infrastructure namespace. The RoleBinding scoped `dev1` and `dev2` to the `dev-team-alpha` namespace only.
+. Once logged in, you should see your **Projects** list. You should only see `dev-team-alpha` and `parasol` related Projects -- no `vault`, `openshift-gitops`, `rhdh`, or any other infrastructure namespace. The new RoleBinding scoped `dev1` and `dev2` to the `dev-team-alpha` - this is why you can see it.
 
 . Select the `dev-team-alpha` project and navigate to **Administration > ResourceQuotas** using the left side menu.
++
+image::ns-aas/ns-quotas.png["The ResourceQuota usage for the dev-team-alpha Namespace",link=self,window=blank,align="center",width=700,title="The ResourceQuota usage for the dev-team-alpha Namespace"]
 +
 You'll see the `dev-team-alpha-quota`. Click it, scroll down, and note the limits the platform team defined: 5 pods, 512Mi total memory requests, and 1Gi total memory limits. The *Used* column shows current consumption.
 
@@ -149,7 +155,8 @@ Stay in the private browser window as `dev1`. You'll use the OpenShift console's
 . Make sure the `dev-team-alpha` project is selected in the **Project** dropdown
 
 . Click the **+** (Import YAML) icon in the top navigation bar
-
++
+image::ns-aas/import-yaml.png["Find the Import YAML link in OpenShift's Web Console",link=self,window=blank,align="center",width=700,title="Find the Import YAML link in OpenShift's Web Console"]
 . Paste the following pod definition -- it requests 512Mi of memory, which is double the per-container maximum of 256Mi:
 +
 [source,yaml]
@@ -201,11 +208,13 @@ spec:
 ----
 
 . Click **Create** -- this time it succeeds.
-
++
+image::ns-aas/good-pod.png["Pod's that stay within the defined LimitRange(s) are created",link=self,window=blank,align="center",width=700,title="Pod's that stay within the defined LimitRange(s) are created"]
 . Navigate to **Workloads > Pods** to confirm `good-pod` is in a `Running` state. The developer got their workload deployed -- they just had to stay within the guardrails the platform team defined.
 
 . Go back to **Administration > ResourceQuotas** and click on `dev-team-alpha-quota`. The *Used* column now reflects the resources consumed by the pod. The platform team can monitor this to understand how close teams are to their limits.
-
++
+image::ns-aas/ns-used-quota.png["ResourceQuota page reflecting new usage by the Pod",link=self,window=blank,align="center",width=700,title="ResourceQuota page reflecting new usage by the Pod"]
 You can now close the private browser window.
 
 == Clean up
