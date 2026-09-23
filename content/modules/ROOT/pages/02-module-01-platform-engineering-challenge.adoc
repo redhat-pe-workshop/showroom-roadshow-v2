@@ -15,8 +15,7 @@ By the end of this module, you'll be able to:
 
 * Articulate the developer experience challenges that platform engineering addresses
 * Describe the concept of golden paths and why they matter
-* Identify the OpenShift capabilities that form the foundation of an IDP
-* Understand the GitOps-driven approach you'll use to build the platform
+* Identify the OpenShift application platform capabilities that form the foundation of an IDP
 
 == The problem: developer experience at scale
 
@@ -32,38 +31,51 @@ At Parasol, these problems are real. The API team can't find documentation for t
 
 == The solution: an Internal Developer Platform
 
-An IDP doesn't replace your existing tools -- it unifies them behind a self-service interface. The platform team curates golden paths that make the secure, compliant path the easiest path. Developers get self-service access to:
+An IDP doesn't replace your existing tools -- it orchestrates them behind a self-service interface and unified developer portal. The platform team curates golden paths that make the secure, compliant path the easiest path.
 
-* **A software catalog** -- Discover services, APIs, and documentation in one place
+**For developers**, the IDP provides:
+
+* **A software catalog** -- Discover services, APIs, owners, and documentation in one place; expose it to AI agents and coding assistants via MCP and REST APIs
 * **Software templates** -- Create new applications from pre-approved blueprints with CI/CD, security scanning, and GitOps deployment baked in
-* **Integrated tooling** -- See pipeline status, deployment topology, and logs without switching between consoles
-* **AI assistance** -- Ask questions about the catalog, get code snippets, and navigate the platform with natural language
+* **Integrated tooling** -- See pipeline status, deployment topology, Kubernetes resources, and logs without switching between consoles
+* **AI assistance** -- Query the catalog with natural language, get context-aware code suggestions, and let AI agents navigate the platform autonomously
+
+**For platform teams**, the IDP provides:
+
+* **Application platform capabilities** -- Reusable OpenShift operators and Helm charts for GitOps (Argo CD), CI/CD (Tekton), secrets management (Vault + External Secrets), identity (Keycloak), and container registries (Quay); standardized deployments reduce cognitive load for ops/SRE teams and make troubleshooting consistent across environments
+* **Software supply chain security** -- Automated SBOM generation, dependency and image vulnerability scanning, policy enforcement, and attestation in every pipeline -- security gates are built in, not optional, so leadership gets guaranteed compliance without slowing developers down
+* **Standardized infrastructure** -- Golden-path templates encode security gates, resource limits, network policies, and observability once; every application inherits the same standards
+* **Centralized secrets management** -- Vault integration via External Secrets Operator eliminates secrets in Git and provides rotation, auditing, and least-privilege access
+* **Visibility and control** -- Track what's deployed, who owns it, which dependencies it uses, and whether it meets security standards
 
 == What you'll build today
 
-Over the next two hours, you'll build Parasol's IDP using Red Hat Developer Hub -- an enterprise-grade developer portal based on the Backstage open source project. You'll deploy it on OpenShift and progressively configure it using a GitOps approach:
+You'll build Parasol's IDP using Red Hat OpenShift's **application platform capabilities** and Red Hat Developer Hub -- an enterprise-grade developer portal based on the CNCF Backstage project. The platform is deployed on OpenShift and progressively configured using a GitOps approach with Argo CD:
 
 [cols="1,3",options="header"]
 |===
 |Step |What you'll do
 
-|Deploy
-|Create a minimal Developer Hub instance using the Operator and Argo CD
+|**Foundation**
+|Understand GitOps fundamentals and the app-of-apps pattern; explore pre-installed application platform capabilities: Argo CD (OpenShift GitOps), Tekton CI (OpenShift Pipelines), HashiCorp Vault (secrets), Keycloak (identity), GitLab (source control), and Quay (container registry)
 
-|Integrate
-|Add SSO authentication, CI/CD plugins, and Kubernetes topology view
+|**Deploy**
+|Create a minimal Developer Hub instance (Internal Developer Portal) using the Red Hat Developer Hub Operator and Argo CD
 
-|Catalog
-|Register Parasol's services and APIs so developers can discover them
+|**Integrate**
+|Add Keycloak SSO, CI/CD plugins, Kubernetes topology view, and Vault secrets to Developer Hub via External Secrets Operator
 
-|Templates
-|Import golden-path templates for self-service application creation
+|**Catalog**
+|Register Parasol's systems, components, APIs, and documentation so developers and AI agents can discover them via the Developer Hub UI, MCP, and REST APIs
 
-|AI
-|Enable Lightspeed with MCP for AI-powered catalog exploration
+|**Templates**
+|Run a golden-path template to create a production-ready application with zero YAML -- complete with multi-namespace GitOps deployment, Tekton pipeline with **software supply chain security gates** (SBOM generation, SonarQube analysis, ACS vulnerability scanning, TPA monitoring), and automated promotion workflow
+
+|**AI Context**
+|Enable Lightspeed for Developer Hub with MCP integration -- exposing the catalog to AI coding assistants (Claude Code, Cursor, GitHub Copilot, Windsurf) and agentic workflows via a standard protocol
 |===
 
-We have a configuration snapshot for each step of this journey, so you can focus on outcomes instead of getting bogged down in YAML and documentation.
+We have a configuration snapshot for each step of this journey managed by GitOps, so you can focus on outcomes and platform capabilities instead of getting bogged down in YAML syntax.
 
 == Module summary
 
@@ -71,7 +83,7 @@ You now understand the developer experience challenges that Parasol faces and th
 
 * **Golden paths** make the right thing the easy thing -- pre-configured workflows that enforce standards while eliminating friction
 * **Red Hat Developer Hub** provides the unified portal that ties the platform together
-* **GitOps** is not just for applications -- you'll manage your IDP configuration the same way
+* **GitOps** is not just for applications -- you'll manage your platform and IDP configurations the same way
 
 **Next steps:**
 In Module 2, you'll explore the OpenShift cluster to see the application platform capabilities that form your IDP's foundation.

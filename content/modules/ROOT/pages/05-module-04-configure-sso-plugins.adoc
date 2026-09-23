@@ -40,42 +40,8 @@ By the end of this module, you'll be able to:
 
 You'll also see how Kustomize overlays let you layer these additions on top of the base configuration without modifying the original files - this is just a little bonus learning, but isn't required when you embark on your own IDP journey.
 
-[IMPORTANT]
-====
-**Skipped the previous modules?** If you didn't complete the "Deploy Developer Hub" module, you can fast-forward to this module's starting state by running:
-
-[source,bash,role="execute",subs="attributes+"]
-----
-cat <<'EOF' | oc apply -f -
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: developer-hub
-  namespace: openshift-gitops
-spec:
-  project: pe-workshop
-  source:
-    repoURL: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-rhdh-configs.git
-    targetRevision: main
-    path: base
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: rhdh
-  syncPolicy:
-    automated:
-      selfHeal: true
-EOF
-----
-
-Wait for the Application to sync and the Pod to become healthy before continuing:
-
-[source,bash,role="execute",subs="attributes+"]
-----
-oc get pods -n rhdh -w
-----
-
-Press `Ctrl+C` to stop watching once the pod shows `Running` and `1/1` ready. The pod starting with `backstage-developer-hub` may take a few minutes to become ready on first deployment.
-====
+:overlay-path: base
+include::partial$skip-ahead.adoc[]
 
 == Exercise 0: Switch to the SSO and plugins overlay
 

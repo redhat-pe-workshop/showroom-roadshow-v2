@@ -8,5 +8,5 @@
 * xref:06-module-05-namespace-as-a-product.adoc[5. Namespace as a product]
 * xref:04-module-03-deploy-developer-hub.adoc[6. Deploy Developer Hub]
 * xref:05-module-04-configure-sso-plugins.adoc[7. Connect Developer Hub to the platform]
-* xref:06-module-05-populate-catalog.adoc[8. Map Parasol's software architecture (for humans and agents)]
+* xref:06-module-05-populate-catalog.adoc[8. Build Context for Agents and Developers]
 * xref:07-module-06-self-service-templates.adoc[9. Enable self-service with templates]

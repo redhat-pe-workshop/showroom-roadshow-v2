@@ -1,4 +1,4 @@
-= Module 5: Map Parasol's Software Architecture (for humans and agents)
+= Module 5: Build Context for Agents and Developers
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -9,42 +9,8 @@ Right now, Developer Hub is connected to your platform but the catalog is pretty
 
 In this module, you'll register Parasol's existing software architecture in the catalog -- Systems, Components, APIs, Resources, and documentation -- creating a navigable **map of the entire software landscape for AI agents and humans** and expose it to **agents via Model Context Protocol (MCP)**.
 
-[IMPORTANT]
-====
-**Skipped the previous modules?** If you didn't complete the previous module, you can fast-forward to this module's starting state by running:
-
-[source,bash,role="execute",subs="attributes+"]
-----
-cat <<'EOF' | oc apply -f -
-apiVersion: argoproj.io/v1alpha1
-kind: Application
-metadata:
-  name: developer-hub
-  namespace: openshift-gitops
-spec:
-  project: pe-workshop
-  source:
-    repoURL: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-rhdh-configs.git
-    targetRevision: main
-    path: overlays/02-sso-plugins
-  destination:
-    server: https://kubernetes.default.svc
-    namespace: rhdh
-  syncPolicy:
-    automated:
-      selfHeal: true
-EOF
-----
-
-Wait for the Application to sync and the Pod to become healthy before continuing:
-
-[source,bash,role="execute",subs="attributes+"]
-----
-oc get pods -n rhdh -w
-----
-
-Press `Ctrl+C` to stop watching once the pod shows `Running` and `1/1` ready.
-====
+:overlay-path: overlays/02-sso-plugins
+include::partial$skip-ahead.adoc[]
 
 == Learning objectives
 

@@ -3,11 +3,48 @@
 
 == Timing
 
-The workshop is split into seven modules and should take approximately **2 hours** to complete. You won't be writing code or hand-crafting YAML -- you'll mostly be deploying pre-built configurations and observing the results.
+The workshop is split into multiple modules that can be completed in an order of your choosing. Following the modules in order is recommended for the best experience. You won't be writing code or hand-crafting YAML -- you'll mostly be deploying existing configurations to observe the benefits that thoughful platform engineering provides.
 
 == Your environment
 
 You have your own dedicated OpenShift cluster. The following dependencies are pre-installed to facilitate the workshop:
+
+[mermaid,width=90%]
+....
+graph TD
+    subgraph portal ["Developer Portal"]
+        RHDH["Red Hat Developer Hub"]
+    end
+
+    subgraph cicd ["Source & CI/CD"]
+        GL["GitLab"] -->|triggers| TEK["Tekton Pipelines"]
+        TEK -->|pushes images| Q["Quay"]
+    end
+
+    subgraph deploy ["Deployment"]
+        ARGO["Argo CD"]
+    end
+
+    subgraph services ["Platform Services"]
+        KC["Keycloak"]
+        V["Vault"] --> ESO["External Secrets"]
+    end
+
+    subgraph workspace ["Development"]
+        DS["DevSpaces"]
+    end
+
+    RHDH -->|scaffolds repos| GL
+    RHDH -->|launches| DS
+    RHDH -->|monitors| TEK
+    RHDH -->|tracks images| Q
+    RHDH -->|views deployments| ARGO
+    GL -->|provides manifests| ARGO
+    ESO -->|injects secrets| ARGO
+    KC -. "SSO" .-> RHDH
+    KC -. "SSO" .-> GL
+    KC -. "SSO" .-> ARGO
+....
 
 * **OpenShift GitOps (Argo CD)** -- Declarative, Git-driven deployment
 * **OpenShift Pipelines (Tekton)** -- Cloud-native CI/CD
@@ -21,18 +58,20 @@ You have your own dedicated OpenShift cluster. The following dependencies are pr
 === Credentials
 
 * **OpenShift console**: {openshift_cluster_console_url}
-* **Username**: pe1
+* **Username**: `pe1` (Platform Engineer Persona), `dev1` (Developer Persona)
 * **Password**: {common_password}
 
 NOTE: The same credentials work for OpenShift, Argo CD (via OpenShift OAuth), Keycloak, GitLab, and Developer Hub.
 
 == How you'll work
 
-You will use a GitOps-driven configuration approach. This means you'll use OpenShift GitOps to deploy and manage platform components. Don't worry if this is new to you -- it'll be explained as you follow the content. It essentially boils down to a set of YAML files in a Git repository being continuously reconciled against OpenShift. We're taking a production-like approach in this workshop!
+You will use a GitOps-driven configuration approach. This means you'll use OpenShift GitOps to deploy and manage platform components. Don't worry if this is new to you -- it'll be explained as you follow the content. It essentially boils down to a set of YAML files in a Git repository being continuously reconciled against your OpenShift cluster. We're taking a production-like approach in this workshop! 😎
 
 === Executable terminal commands
 
-Throughout the workshop, you'll see command snippets with a play icon (▶) in the top-right corner. Click the icon to automatically execute the command in the Wetty terminal tab. Try it now:
+Throughout the workshop, you'll see command snippets with a terminal icon in the top-right corner. Select the terminal tab on the right, then click terminal icon in the snippet to automatically execute the command in the Wetty terminal tab. 
+
+Try it now. Select the **Terminal** tab, then click the icon in snippet below:
 
 [source,bash,role="execute"]
 ----
