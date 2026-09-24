@@ -29,6 +29,8 @@ NOTE: These specific tools are used in this workshop, but the concepts apply reg
 
 . Navigate to **Ecosystem > Installed Operators** using the left-hand menu and verify the following are installed:
 +
+NOTE: The *Installed Operators* page can take a moment to discover and list every Operator.
++
 * **Red Hat OpenShift GitOps** -- Argo CD for declarative deployments
 * **Red Hat OpenShift Pipelines** -- Tekton for CI/CD pipelines
 * **Red Hat OpenShift Dev Spaces** -- Cloud development workspaces

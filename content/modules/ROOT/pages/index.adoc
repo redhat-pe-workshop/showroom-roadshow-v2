@@ -23,6 +23,8 @@ The numbers tell a compelling story about why platform engineering matters:
 
 You're a platform engineer at Parasol Insurance. Your development teams are growing but **onboarding is slow, environments are inconsistent**, and developers spend too much time filing tickets instead of shipping features. Meanwhile, the **security team is struggling to https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security[enforce software supply chain compliance]** -- there's no consistent way to scan dependencies, sign artifacts, or verify provenance across teams. Additionally, the C-suite has made it clear: they want developers building with AI -- both **using AI coding assistants to accelerate development and integrating AI capabilities** into Parasol's applications.
 
+image::intro/personas.png["Three Personas. One loop. Now with Agents.",link=self,window=blank,align="center",width=900,title="Three Personas. One loop. Now with Agents."]
+
 Your CTO has tasked you with expanding the platform engineering initiatives to build out a consistent Internal Developer Platform (IDP) and Internal Developer Portal (based on https://developers.redhat.com/products/rhdh[Red Hat Developer Hub]) that facilitates better self-service and discovery for developers and AI agents. The platform should make the secure path the easy path -- developers get self-service access to golden-path templates, pre-configured CI/CD pipelines, standardized AI model access, and a unified portal where they and their AI harnesses can discover services, APIs, and documentation without filing a ticket.
 
 == What you'll learn

@@ -105,9 +105,8 @@ And that's it! You've deployed an instance of Red Hat Developer Hub using Operat
 In the Argo CD Application view, you should see:
 
 * Sync status: **Synced**
-* Health status: **Healthy** (this may take 1-2 minutes as the Operator creates the pods)
-* Four resources deployed: 1 Backstage CR, 2 ConfigMaps, 1 PVC
-* Child resources, including a `backstage-developer-hub` Pod showing a green heart symbol.
+* Health status: **Healthy**
+* Child resources, including a `backstage-developer-hub` Pod showing a green heart symbol  (this takes up to 5 minutes as plugins ares unpacked)
 
 NOTE: It can take a few minutes for the initial Pod deployment to complete, as it needs to unpack and install core Backstage and Developer Hub plugins. To observe the logs you can click the Pod in the Argo CD UI, select **Logs**, then choose `install-dynamic-plugins` in the dropdown above the log stream.
 
@@ -133,15 +132,6 @@ image::m3/rhdh-empty.png[Red Hat Developer Hub landing page,link=self,window=bla
 TIP: Backstage -- and therefore Developer Hub -- uses Entities to represent Components, APIs, Groups, Users, and business Domains in the built-in Software Catalog. These Entities have relationships that can be viewed as a graph, or read by AI Agents to understand your businesses software architecture. You'll see this in action in later modules.
 
 This is the starting point. A functional Developer Hub instance deployed with a single Backstage custom resource and a basic app-config. In the next modules, you'll progressively add authentication, integrations, catalog entities, and templates.
-
-=== Verify
-
-* Developer Hub is accessible and shows the landing page
-* You can log in as a guest
-* The Catalog page is empty
-* The Self-Service page shows no templates
-
-The RHDH Operator handled the rest: creating the Deployment, Service, Route, and database. No Dockerfiles, no custom builds, no manual pod configuration.
 
 == Module summary
 

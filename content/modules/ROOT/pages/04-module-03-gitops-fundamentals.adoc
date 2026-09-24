@@ -105,7 +105,10 @@ NOTE: The user you've logged in as can view, but not edit/delete the existing Ar
 |Field |Value
 
 |Application Name
-|`sample-app`
+a|[source,text,role="copypaste",subs="attributes+"]
+----
+sample-app
+----
 
 |Project Name
 |`pe-workshop`
@@ -113,10 +116,10 @@ NOTE: The user you've logged in as can view, but not edit/delete the existing Ar
 |Sync Policy
 |`Manual`
 
-|Auto-Create Namespace
+|Set Deletion Finalizer
 |`Enabled`
 
-|Set Deletion Finalizer
+|Auto-Create Namespace
 |`Enabled`
 
 |Repository URL
@@ -126,10 +129,16 @@ https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/prerequisite-sampl
 ----
 
 |Revision
-|`main`
+a|[source,text,role="copypaste",subs="attributes+"]
+----
+main
+----
 
 |Path
-|`gitops`
+a|[source,text,role="copypaste",subs="attributes+"]
+----
+gitops
+----
 
 |Cluster URL
 a|[source,text,role="copypaste"]
@@ -138,7 +147,10 @@ https://kubernetes.default.svc
 ----
 
 |Namespace
-|`prerequisite-samples`
+a|[source,text,role="copypaste",subs="attributes+"]
+----
+prerequisite-samples
+----
 |===
 
 . Click **Create**, then enter "sample" in the search input in Argo CD

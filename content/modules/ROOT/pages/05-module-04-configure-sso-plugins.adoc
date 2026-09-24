@@ -5,7 +5,7 @@
 
 A developer portal with guest authentication and no integrations isn't very useful. Parasol's developers need to log in with their corporate identity and see their CI/CD pipelines, deployment topology, and application status -- all without leaving the portal.
 
-In this module, you'll connect Developer Hub to the platform by configuring SSO authentication, enabling dynamic plugins, and integrating with platform services -- transforming it from a blank canvas into a connected portal.
+In this module, you'll connect Developer Hub to platform capabilities by configuring SSO authentication, enabling dynamic plugins, and integrating with platform services -- transforming it from a blank canvas into a connected portal.
 
 [mermaid,svg,width=80%]
 ----
@@ -126,8 +126,9 @@ KC_PASS=$(oc get secret keycloak-initial-admin -n keycloak -o jsonpath='{.data.p
 echo "Username: $KC_USER"
 echo "Password: $KC_PASS"
 ----
-
 . Expand the sidemenu. In the top-left dropdown, select the **backstage** realm. This realm has been pre-configured with:
++
+image::rhdh-integrations/keycloak-users.png["Users pre-created in the Backstage Realm in Keycloak",link=self,window=blank,align="center",width=700,title="Users pre-created in the Backstage Realm in Keycloak"]
 +
 * **Users and groups** -- The same `dev1`, `dev2`, `pe1`, and `pe2` users you've used throughout the workshop, organised into `developers` and `platformengineers` groups
 * **Clients** -- A `backstage` client configured for OIDC authentication with Developer Hub
@@ -144,45 +145,30 @@ VAULT_TOKEN=$(oc get secret vault-token -n vault -o jsonpath='{.data.token}' | b
 echo "Token: $VAULT_TOKEN"
 ----
 
-. Navigate to `kv` > `secrets/` > `keycloak/` > `client-secret`
+. Navigate to `kv` > `secrets/` > `keycloak/` > `client-secret` then select the *Secret* tab
 +
+image::rhdh-integrations/keycloak-users.png["Users pre-created in the Backstage Realm in Keycloak",link=self,window=blank,align="center",width=700,title="Users pre-created in the Backstage Realm in Keycloak"]
 You'll see the `clientId` and `clientSecret` values that Developer Hub needs to connect to Keycloak. These are the same credentials referenced by the `backstage` client you just saw in Keycloak. 
 
-The workshop has pre-populated the credentials in Vault to save time, but a platform team will typically add them to Vault as necessary.
+The workshop has pre-populated the credentials in Vault to save time, but a platform team will typically add them to Vault as necessary to make them available to applications. If the Secret is updated in Vault, downstream applications will receeive the new value automatically.
 
 === ExternalSecrets: the bridge
 
-. Open the **GitLab** tab and navigate to `ocp-pe-wkshp-rhdh-configs/overlays/02-sso-plugins/`
+. Open the **GitLab** tab and log in as `pe1` with password `{common_password}` if prompted
 
+. Navigate to *rhdh/ocp-pe-wkshp-rhdh-configs* and open the `overlays/02-sso-plugins/` folder
++
+gitlab-external-secrets.png
 . Open `es-oauth-client.yaml`. This ExternalSecret follows exactly the same pattern you used in Module 4:
 +
+image::rhdh-integrations/gitlab-external-secrets.png["External Secret CRs for Developer Hub",link=self,window=blank,align="center",width=700,title="External Secret CRs for Developer Hub"] 
 * It references the `vault-secret-store` ClusterSecretStore
 * It pulls `clientId` and `clientSecret` from the Vault path `secrets/keycloak/client-secret`
 * It creates a Kubernetes Secret named `oauth-client` that Developer Hub will consume
 +
 The file contains only references -- no sensitive values.
 
-. Notice the other `es-*.yaml` files in this directory. This overlay adds five ExternalSecrets in total:
-+
-[cols="1,2",options="header"]
-|===
-|ExternalSecret |What it provides
-
-|`oauth-client`
-|Keycloak OIDC client ID and secret for SSO
-
-|`argocd-password`
-|Argo CD credentials for the GitOps plugin
-
-|`gitlab-token`
-|GitLab access token for the SCM integration
-
-|`kubernetes-sa-token`
-|Service account token for the Kubernetes/topology plugin
-
-|`backend-secret`
-|A random secret used to secure Developer Hub's backend
-|===
+. Notice the additional `es-*.yaml` files in this directory that are also used by Developer Hub.
 
 TIP: The External Secrets are individual files in this example, however you could combine them into a single file for convenience.
 
@@ -214,40 +200,54 @@ oc rollout status deployment/backstage-developer-hub -n rhdh
 . Once logged in, notice what's changed:
 +
 * Your identity is displayed in the top-right profile menu
-* The **global header** now shows links to platform tools: DevSpaces, GitLab, and Quay
+* The header's **Developer Tools** (grid) icon now shows links to platform tools: DevSpaces, GitLab, and Quay
 * The sidebar has additional plugin entries
++
+image::rhdh-integrations/header-identity.png["Developer Hub header showing identity and new links",link=self,window=blank,align="center",width=700,title="Developer Hub header showing identity and new links"]
 
 == Exercise 3: Explore the plugin capabilities
 
 With our chosen dynamic plugins enabled, Developer Hub now connects to the platform services running on the cluster. Off-cluster services are also supported, but for this workshop everything is contained within the workshop environment.
 
+. Navigate to **Settings** and confirm your user identity is shown -- this is your Keycloak profile, synced into Developer Hub.
++
+TIP: Use the *Pin Sidebar* toggle to make the sidebar collapse as seen in the following image.
++
+image::rhdh-integrations/rhdh-user-setting.png["User Profile data is imported from Keycloak",link=self,window=blank,align="center",width=700,title="User Profile data is imported from Keycloak"]
 . Navigate to **Catalog** and switch the **Kind** filter to **User** or **Group**. You should see entities already appearing:
 +
 * **Keycloak user sync** -- Developer Hub is now importing users and groups from Keycloak automatically. The `dev1`, `dev2`, `pe1`, and `pe2` users and their groups (`developers`, `platformengineers`) should be visible as catalog entities.
-
-. Navigate to **Catalog** and switch the **Kind** filter to **Component**. You should see the **parasol-insurance** component appear:
++
+image::rhdh-integrations/synced-users.png["User Entities, synced into Developer Hub by the Keycloak integration",link=self,window=blank,align="center",width=700,title="User Entities, synced into Developer Hub by the Keycloak integration"]
+. Switch the **Kind** filter to **Component**. You should see the **parasol-insurance** component appear:
++
+image::rhdh-integrations/parasol-insurance-component.png["The Parasol Insurance application has been ingested from GitLab",link=self,window=blank,align="center",width=700,title="The Parasol Insurance application has been ingested from GitLab"]
 +
 TIP: A warning about missing relations will be shown on the Parasol Insurance component overview page. We'll fix that soon!
 +
-* **GitLab discovery** -- Developer Hub has automatically discovered the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-insurance/blob/main/catalog-info.yaml[parasol-insurance repository's catalog-info.yaml,window=gitlab] file via the GitLab plugin you enabled
-* **Rich integration data** -- Click into the parasol-insurance component to explore data provided by other plugins:
-** **Overview tab** -- Shows JIRA issues related to the component (the JIRA integration you just enabled - this uses fake data in this workshop environment)
-** **CI tab** -- Displays recent OpenShift Pipelines (Tekton) runs
-** **Topology tab** -- Shows running pods and Kubernetes resources
-** **Kubernetes tab** -- Lists all related Kubernetes objects (Deployments, Services, Routes)
+Click into the parasol-insurance component to explore data provided by the plugins:
 +
+* **Overview tab** -- Shows JIRA issues related to the component (the JIRA integration you just enabled - this uses fake data in this workshop environment)
+* **CI tab** -- Displays recent OpenShift Pipelines (Tekton) runs, including SonarQube scan results for supply chain security
+* **Topology tab** -- Shows running pods and Kubernetes resources
+* **Kubernetes tab** -- Lists all related Kubernetes objects (Deployments, Services, Routes)
++
+image::rhdh-integrations/parasol-insurance-topology.png["Parasol Insurance viewed in an OpenShift-styled Topology View",link=self,window=blank,align="center",width=700,title="Parasol Insurance viewed in an OpenShift-styled Topology View"]
+
+=== How did this component get configured?
+
+**GitLab discovery** -- Developer Hub has automatically discovered the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-insurance/blob/main/catalog-info.yaml[parasol-insurance repository's catalog-info.yaml,window=gitlab] file via the GitLab plugin you enabled.
+
 [NOTE]
 ====
 The `catalog-info.yaml` file is a special Backstage entity descriptor that tells Developer Hub how to display this Component. It includes:
 
 * **Metadata** -- component name, description, ownership, and labels
 * **API references** -- which APIs this component provides or consumes
-* **Annotations** -- integration hooks for Kubernetes (`backstage.io/kubernetes-id`), Tekton (`janus-idp.io/tekton`), JIRA (`jira/project-key`), and Quay (`quay.io/repository-slug`)
+* **Annotations** -- integration hooks for Kubernetes (`backstage.io/kubernetes-id`), Tekton (`janus-idp.io/tekton`), JIRA (`jira/project-key`), Quay (`quay.io/repository-slug`), and SonarQube (`sonarqube.org/project-key`)
 
-Developer Hub reads these annotations to wire up the CI/CD tab (Tekton pipelines), Topology tab (Kubernetes resources), and Overview tab (JIRA issues) you just explored. The component's developers can maintain this file in source control alongside their code, or externally as you'll see in the next module.
+Developer Hub reads these annotations to wire up the CI/CD tab (Tekton pipelines), Topology tab (Kubernetes resources), Overview tab (JIRA issues), and SonarQube scan results you just explored. The component's developers can maintain this file in source control alongside their code, or externally as you'll see in the next module.
 ====
-
-. Navigate to **Settings** and confirm your user identity is shown -- this is your Keycloak profile, synced into Developer Hub.
 
 The integrations you just enabled are defined in two overlay files: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-rhdh-configs/-/blob/main/overlays/02-sso-plugins/patches/dynamic-plugins.yaml[dynamic-plugins.yaml,window=gitlab] lists the plugins (Keycloak, GitLab, Argo CD, Kubernetes, Tekton), and https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-rhdh-configs/-/blob/main/overlays/02-sso-plugins/configmap-app-config-auth.yaml[configmap-app-config-auth.yaml,window=gitlab] contains their configuration (OIDC settings, API endpoints, authentication providers).
 
@@ -255,15 +255,8 @@ The integrations you just enabled are defined in two overlay files: https://gitl
 
 Developer Hub is now a connected portal with corporate SSO and platform integrations.
 
-**What you accomplished:**
-
-* Switched Argo CD to a new configuration overlay in one step
-* Enabled SSO authentication via Keycloak OIDC
-* Activated dynamic plugins for CI/CD, GitOps, and topology
-* Connected Developer Hub to Vault for secrets management
-
 **Key takeaway:**
-Developers now have a single place to view builds, issues, app health, and logs -- all gated by their corporate identity. Instead of switching between Jenkins, JIRA, and kubectl, they work from one unified portal.
+Developers now have a single place to view builds, issues, app health, and logs -- all gated by their corporate identity. Instead of switching between Jenkins, JIRA, and kubectl, they work from one unified portal. Onboarding new developers becomes seamless, since everything is in one place.
 
 **Next steps:**
 In the next module, you'll populate the software catalog with Parasol's services, documentation and APIs, giving developers and AI agents a single place to understand the organisation's software landscape.

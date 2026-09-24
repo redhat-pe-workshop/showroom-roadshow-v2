@@ -17,11 +17,9 @@ include::partial$skip-ahead.adoc[]
 By the end of this module, you'll be able to:
 
 * Understand the Backstage entity model (Components, Systems, APIs, Resources, Domains)
-* Register catalog entities by adding location URLs to the app-config
 * Visualize system architecture using System Diagrams and relationship graphs
 * Navigate domain documentation (including compliance information) through the catalog
-* Use Lightspeed to query the catalog with natural language
-* Understand how MCP connects AI assistants to the catalog API
+* Use Lightspeed to query the catalog with natural language, and expose an MCP server
 * Recognize the catalog as both a human-facing portal and a machine-readable knowledge graph for AI agents
 
 == The Backstage entity model
@@ -36,9 +34,13 @@ Before registering entities (like the Parasol Insurance component in the prior m
 
 Each entity is defined in a YAML file (commonly named `catalog-info.yaml`) file that typically lives alongside the source code. The team that owns a component is responsible for maintaining its `catalog-info.yaml` -- just like they maintain the code itself. Developer Hub reads these files and builds the catalog graph.
 
-Not every entity needs a hand-crafted YAML file, though. Integrations like the GitLab discovery provider (which you enabled in the previous module) can scan repositories and auto-register any `catalog-info.yaml` files they find. Other providers go further -- the Keycloak provider you configured automatically imports users and groups from your identity provider, and CI/CD integrations can surface pipeline and deployment data without any catalog changes at all.
+image::populate-catalog/entities-sample.png[Sample Entity relationship diagram from the upstream Backstage Documentation,link=self,window=blank,align="center",width=700,title=Sample Entity relationship diagram from the Backstage Documentation]
+
+Not every entity needs a hand-crafted YAML file, though. Providers (registered by plugins) often go further -- the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-rhdh-configs/-/blob/main/overlays/02-sso-plugins/configmap-app-config-auth.yaml#L50-61[Keycloak provider you configured,window=gitlab] automatically imports users and groups from your identity provider, and CI/CD integrations can surface pipeline and deployment data without any catalog changes at all.
 
 == Exercise 1: Enable the Entities Overlay
+
+Parasol's Platform Team have already used generative AI to map out Entities corresponding to their existing domains, systems, APIs, and components. You'll view these files in a moment, but first let's get Developer Hub to start ingesting them.
 
 . In the **Argo CD** tab, click on your **developer-hub** Application
 
@@ -59,17 +61,17 @@ While Developer Hub is deploying, let's take a look at the catalog entity defini
 
 As part of their IDP adoption initiative, Parasol's teams created catalog entity definitions to document their architecture. This wasn't just for human consumption -- it was also part of their AI strategy: structured, machine-readable documentation that AI assistants can query programmatically.
 
-. Refresh the **GitLab** tab on the right, and open the **parasol-entities** repository
+. Refresh the **GitLab** tab on the right, and open the **parasol/parasol-entities** repository
 +
 image::populate-catalog/gitlab-projectslist-entities.png[The `parasol-entities` repository in GitLab,link=self,window=blank,align="center",width=700,title=The `parasol-entities` repository in GitLab]
-. Open the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/blob/main/catalog-index.yaml[`catalog-index.yaml`,window=gitlab] file at the repository root
+. Open the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/blob/main/catalog-index.yaml[catalog-index.yaml,window=gitlab] file at the repository root
 +
 This is the **catalog index** -- a specialized Location entity that references all of Parasol's architecture definitions. Notice the `spec.targets` array: each entry points to a YAML file containing entity definitions.
-. Open https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/blob/main/parasol-foundations.yaml[`parasol-foundations.yaml`,window=gitlab] to see how Domains and Systems are defined
+. Explore the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/tree/main/techdocs/domains/billing-payments[techdocs/domains/billing-payments/,window=gitlab] directory to see how documentation can be stored
 +
-Notice the TechDocs annotations (`backstage.io/techdocs-ref`) -- these link to documentation for each Domain, including the PCI-DSS compliance information you'll explore later.
+This directory contains Markdown documentation for the Billing & Payments domain, including PCI-DSS compliance information you'll explore later. While this example stores documentation in a dedicated repository, teams can also store docs alongside their component's source code if they prefer -- the `backstage.io/techdocs-ref` annotation in entity definitions tells Developer Hub where to find the documentation.
 
-. Open one of the component files, such as https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/blob/main/components/parasol-catalog-claims.yaml[`components/parasol-catalog-claims.yaml`,window=gitlab]
+. Open one of the component files, such as https://gitlab-gitlab.{openshift_cluster_ingress_domain}/parasol/parasol-entities/-/blob/main/components/parasol-catalog-claims.yaml[components/parasol-catalog-claims.yaml,window=gitlab]
 +
 See how each component specifies its type, lifecycle, owner, system membership, and API dependencies. This metadata is what powers the System Diagrams and relationship graphs you'll explore next.
 
@@ -108,7 +110,7 @@ Notice how the diagram shows:
 +
 image::populate-catalog/system-diagram.png[Developer Hub showing the API Gateway system diagram,link=self,window=blank,align="center",width=700,title=Developer Hub showing the API Gateway system diagram]
 
-. Click **View Graph** (at the top right of the diagram)
+. Click **View Graph** (at the bottom left of the diagram)
 +
 This opens the full relationship graph with additional depth. You can:
 +
@@ -117,7 +119,9 @@ This opens the full relationship graph with additional depth. You can:
 * **Trace dependencies** across multiple levels (e.g., which APIs a component uses, which resources those APIs depend on)
 +
 This is the catalog's power: it doesn't just list services, it models the relationships between them. When a developer asks "what does the Billing service depend on?", the graph shows the answer immediately.
-
+. Set *Direction* to left to right and *Max Depth* to 3 to see even more relationships.
++
+image::populate-catalog/relationships-graph.png["The API Gateway System relationships modeled with a depth of 3",link=self,window=blank,align="center",width=700,title="The API Gateway System relationships modeled with a depth of 3"]
 . Click **Docs** in the left navigation bar, and use the **Filters** to show *All documentation*
 
 . Click on **Billing & Payments** in the documentation index
@@ -140,32 +144,38 @@ You've just explored the catalog visually as a human. Now see how AI agents can 
 [NOTE]
 ====
 The overlay you just deployed includes **Lightspeed** -- an AI assistant integrated into Developer Hub. Lightspeed runs as sidecar containers (llama-stack for LLM inference, lightspeed-core for the service layer) with MCP access to the catalog API.
-
-This means Lightspeed can query real catalog data in real-time -- not generic documentation, but your actual Systems, Components, APIs, and TechDocs.
 ====
 
 . Open the **Developer Hub** tab and look for the floating **Lightspeed** icon in the bottom-right corner
 
 . Click the Lightspeed icon to open the chat interface
-
-. Try asking Lightspeed about the catalog you just explored:
+. Select the *VLLM > qwen3-235b* model
 +
-* _"How does Parasol handle PCI compliance?"_
-  ** Lightspeed uses MCP to query the catalog's TechDocs API
-  ** Retrieves the Billing & Payments documentation you saw in Exercise 2
-  ** Returns an answer grounded in the actual compliance documentation
+image::populate-catalog/lightspeed-model.png["Lightspeed UI shown with a Qwen3-235B model selected",link=self,window=blank,align="center",width=700,title="Lightspeed UI shown with a Qwen3-235B model selected"]
+. Ask Lightspeed a question about compliance documentation:
 +
-* _"What components are in the API Gateway System?"_
-  ** Lightspeed queries the catalog API for the API Gateway System entity
-  ** Lists the actual Components you saw in the System Diagram
+[source,text,role="copypaste"]
+----
+How does Parasol handle PCI compliance? Perhaps we have documentation about billing and payments?
+----
 +
-* _"What does the Claims service depend on?"_
-  ** Lightspeed traverses the catalog's relationship graph
-  ** Returns the API and Resource dependencies
-
+* Lightspeed uses MCP to query the catalog's TechDocs API
+* Retrieves the Billing & Payments documentation you saw in Exercise 2
+* Returns an answer grounded in the actual compliance documentation
++
+image::populate-catalog/lightspeed-docs.png["Lightspeed can read documentation to provide helpful, accurate, answers",link=self,window=blank,align="center",width=700,title="Lightspeed can read documentation to provide helpful, accurate, answers"]
+. Next, ask about system ownership:
++
+[source,text,role="copypaste"]
+----
+Who should I talk to if I have questions about the API Gateway System?
+----
++
+* Lightspeed traverses the catalog's relationship graph
+* Finds the owning Group and finds an associated Slack channel
++
+image::populate-catalog/lightspeed-teams.png["Lightspeed can determine ownership and generate contact links",link=self,window=blank,align="center",width=700,title="Lightspeed can determine ownership and generate contact links"]
 . Notice how Lightspeed's answers reference **real entities** from your catalog, not generic responses
-
-. Try one of the pre-configured suggested prompts if available in the chat interface
 
 [IMPORTANT]
 ====
