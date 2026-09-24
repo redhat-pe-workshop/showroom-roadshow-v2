@@ -7,8 +7,6 @@ Parasol Insurance is growing fast. New product lines, new teams, new developers 
 
 Sound familiar?
 
-In this module, you'll explore the problem that platform engineering solves and understand the approach you'll take throughout this workshop to build Parasol's Internal Developer Platform (IDP).
-
 == Learning objectives
 
 By the end of this module, you'll be able to:
@@ -48,40 +46,11 @@ An IDP doesn't replace your existing tools -- it orchestrates them behind a self
 * **Centralized secrets management** -- Vault integration via External Secrets Operator eliminates secrets in Git and provides rotation, auditing, and least-privilege access
 * **Visibility and control** -- Track what's deployed, who owns it, which dependencies it uses, and whether it meets security standards
 
-== What you'll build today
-
-You'll build Parasol's IDP using Red Hat OpenShift's **application platform capabilities** and Red Hat Developer Hub -- an enterprise-grade developer portal based on the CNCF Backstage project. The platform is deployed on OpenShift and progressively configured using a GitOps approach with Argo CD:
-
-[cols="1,3",options="header"]
-|===
-|Step |What you'll do
-
-|**Foundation**
-|Understand GitOps fundamentals and the app-of-apps pattern; explore pre-installed application platform capabilities: Argo CD (OpenShift GitOps), Tekton CI (OpenShift Pipelines), HashiCorp Vault (secrets), Keycloak (identity), GitLab (source control), and Quay (container registry)
-
-|**Deploy**
-|Create a minimal Developer Hub instance (Internal Developer Portal) using the Red Hat Developer Hub Operator and Argo CD
-
-|**Integrate**
-|Add Keycloak SSO, CI/CD plugins, Kubernetes topology view, and Vault secrets to Developer Hub via External Secrets Operator
-
-|**Catalog**
-|Register Parasol's systems, components, APIs, and documentation so developers and AI agents can discover them via the Developer Hub UI, MCP, and REST APIs
-
-|**Templates**
-|Run a golden-path template to create a production-ready application with zero YAML -- complete with multi-namespace GitOps deployment, Tekton pipeline with **software supply chain security gates** (SBOM generation, SonarQube analysis, ACS vulnerability scanning, TPA monitoring), and automated promotion workflow
-
-|**AI Context**
-|Enable Lightspeed for Developer Hub with MCP integration -- exposing the catalog to AI coding assistants (Claude Code, Cursor, GitHub Copilot, Windsurf) and agentic workflows via a standard protocol
-|===
-
-We have a configuration snapshot for each step of this journey managed by GitOps, so you can focus on outcomes and platform capabilities instead of getting bogged down in YAML syntax.
-
 == Module summary
 
 You now understand the developer experience challenges that Parasol faces and the platform engineering approach you'll use to solve them. The key concepts to carry forward:
 
-* **Golden paths** make the right thing the easy thing -- pre-configured workflows that enforce standards while eliminating friction
+* **Golden paths (software templates)** make the right thing the easy thing -- pre-configured workflows that enforce standards while eliminating friction
 * **Red Hat Developer Hub** provides the unified portal that ties the platform together
 * **GitOps** is not just for applications -- you'll manage your platform and IDP configurations the same way
 

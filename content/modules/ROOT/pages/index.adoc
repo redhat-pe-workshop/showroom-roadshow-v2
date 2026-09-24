@@ -1,12 +1,29 @@
 = Platform Engineering Workshop
 
-Welcome to the Platform Engineering Workshop!
+== Who this is for
+
+This workshop is designed for platform engineers and DevOps leads with intermediate to advanced experience with OpenShift and Kubernetes. Developers and Developer Leads will also appreciate this workshop as it gives them greater insight into OpenShift and Platform Engineering concepts.
+
+== Developer experience impacts humans and AI
+
+The numbers tell a compelling story about why platform engineering matters:
+
+* **50% of developers lose 10+ hours weekly** to inefficiencies -- an estimated annual $7.9M loss per 500 developers^1^
+* **243% increase in incidents per pull request** when AI lacks context -- potential outage, security event, or customer-facing failure^2^
+* **46% of platform teams remain mostly reactive**, unable to focus on top challenges like driving developer adoption^3^
+
+[.small]
+--
+^1^ https://www.atlassian.com/teams/software-development/state-of-developer-experience-2025[The State of Developer Experience in 2025], Atlassian +
+^2^ http://faros.ai/acceleration-whilash[AI Engineering Report 2026], Faros +
+^3^ https://platformengineering.org/reports/state-of-platform-engineering-volume-4[State of Platform Engineering Vol. 4], platformengineering.org, 2025
+--
 
 == Your role and mission
 
 You're a platform engineer at Parasol Insurance. Your development teams are growing but **onboarding is slow, environments are inconsistent**, and developers spend too much time filing tickets instead of shipping features. Meanwhile, the **security team is struggling to https://www.redhat.com/en/topics/security/what-is-software-supply-chain-security[enforce software supply chain compliance]** -- there's no consistent way to scan dependencies, sign artifacts, or verify provenance across teams. Additionally, the C-suite has made it clear: they want developers building with AI -- both **using AI coding assistants to accelerate development and integrating AI capabilities** into Parasol's applications.
 
-Your CTO has tasked you with expanding the platform engineering initiatives to build out a consistent Internal Developer Platform (IDP) and Internal Developer Portal (based on Red Hat Developer Hub) that facilitates better self-service and discovery for developers and AI agents. The platform should make the secure path the easy path -- developers get self-service access to golden-path templates, pre-configured CI/CD pipelines, standardized AI model access, and a unified portal where they and their AI harnesses can discover services, APIs, and documentation without filing a ticket.
+Your CTO has tasked you with expanding the platform engineering initiatives to build out a consistent Internal Developer Platform (IDP) and Internal Developer Portal (based on https://developers.redhat.com/products/rhdh[Red Hat Developer Hub]) that facilitates better self-service and discovery for developers and AI agents. The platform should make the secure path the easy path -- developers get self-service access to golden-path templates, pre-configured CI/CD pipelines, standardized AI model access, and a unified portal where they and their AI harnesses can discover services, APIs, and documentation without filing a ticket.
 
 == What you'll learn
 
@@ -31,10 +48,6 @@ You'll progressively build Parasol's IDP using a GitOps-driven approach:
 . **Launch AI-enabled development environments** -- Use OpenShift Dev Spaces to provide developers with standardized, browser-based workspaces with AI coding assistance built-in
 
 Each step builds on the previous one. You'll advance through configurations using Argo CD -- no hand-crafted YAML required.
-
-== Who this is for
-
-This workshop is designed for platform engineers and DevOps leads with intermediate to advanced experience with OpenShift and Kubernetes.
 
 == Prerequisites
 
