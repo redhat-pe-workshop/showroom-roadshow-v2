@@ -248,7 +248,7 @@ Argo CD has detected that the cluster state (3 replicas) no longer matches the d
 
 . Click on the Deployment and select the **Diff** tab to see exactly what is causing the **OutOfSync** status.
 +
-image::gitops-basics/argocd-diff.png["The diff beteween desired and current on-cluster state, seen in Argo CD",link=self,window=blank,align="center",width=700,title="The diff beteween desired and current on-cluster state, seen in Argo CD"]
+image::gitops-basics/argocd-diff.png["The diff between desired and current on-cluster state, seen in Argo CD",link=self,window=blank,align="center",width=700,title="The diff beteween desired and current on-cluster state, seen in Argo CD"]
 . Click **Sync**, then **Synchronize** to correct the drift.
 +
 Argo CD scales the Deployment back down to 2 replicas -- the number defined in Git.

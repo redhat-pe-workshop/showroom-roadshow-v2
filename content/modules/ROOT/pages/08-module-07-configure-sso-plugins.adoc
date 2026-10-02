@@ -1,4 +1,4 @@
-= Module 4: Connect Developer Hub to the Platform
+= Module 7: Connect Developer Hub to the Platform
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1

@@ -1,4 +1,4 @@
-= Module 6: Enable self-service with templates
+= Module 9: Enable self-service with templates
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -221,4 +221,4 @@ This is where platform engineering delivers transformational impact.
 
 This is the multiplier effect of platform engineering: build the golden path once, enable hundreds of teams to run it reliably.
 
-In the next module, you will experience how developers can use a standardized Cloud Development Environment (CDE) provided by **OpenShift Dev Spaces** to develop applications with AI assitance in a hosted VS Code environment hosted on OpenShift.
+In the next module, you will experience how developers can use a standardized Cloud Development Environment (CDE) provided by **OpenShift Dev Spaces** to develop applications with AI assistance in a hosted VS Code environment hosted on OpenShift.

@@ -1,4 +1,4 @@
-= Module 5: Build Context for Agents and Developers
+= Module 8: Build Context for Agents and Developers
 :source-highlighter: rouge
 :toc: macro
 :toclevels: 1
@@ -110,7 +110,7 @@ Notice how the diagram shows:
 +
 image::populate-catalog/system-diagram.png[Developer Hub showing the API Gateway system diagram,link=self,window=blank,align="center",width=700,title=Developer Hub showing the API Gateway system diagram]
 
-. Click **View Graph** (at the bottom left of the diagram)
+. Click **View Graph** (at the bottom right of the diagram)
 +
 This opens the full relationship graph with additional depth. You can:
 +

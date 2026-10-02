@@ -1,0 +1,52 @@
+= Module 10: Enable a Cloud IDE for developers
+:source-highlighter: rouge
+:toc: macro
+:toclevels: 1
+
+Parasol's developers can now utilize self-service templates to provision new application environments.  Let us now take this to another level and enable developers to provision full development environments.  Imagine a world where the developers can; maintain legacy applications, add new features to growing applications, and create greenfield applications, all without having to fight with tools, dependencies, configuration, and resource constraints on their local workstations.
+
+We will now make that happen with OpenShift Dev Spaces.
+
+== Learning objectives
+
+By the end of this module, you will be able to:
+
+* Create an instance of OpenShift Dev Spaces using the CheCluster custom resource
+* Launch a workspace from a git repository
+* Add guardrails to Dev Spaces to set limits for CPU, Memory, and Storage use
+* Create centrally managed configurations for AI harnesses
+
+== Exercise 1: Deploy an instance of OpenShift Dev Spaces
+
+. In the **Terminal** tab, create the Argo CD Application:
++
+[source,bash,role="execute",subs="attributes+"]
+----
+cat <<'EOF' | oc apply -f -
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: openshift-dev-spaces
+  namespace: openshift-gitops
+spec:
+  project: pe-workshop
+  source:
+    repoURL: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-dev-spaces-config.git
+    targetRevision: main
+    path: base
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: openshift-devspaces
+  syncPolicy:
+    automated:
+      selfHeal: true
+EOF
+----
+
+== Exercise 2: Launch a workspace for Parasol Insurance development
+
+== Exercise 3: Add some guardrails to developer workspaces
+
+== Exercise 4: Enable an AI harness for AI enhanced development
+
+== Module summary

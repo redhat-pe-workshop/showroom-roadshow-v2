@@ -12,7 +12,7 @@ In this module, you will log into the OpenShift console and Argo CD to see what'
 By the end of this module, you will be able to:
 
 * Identify the pre-installed operators that provide application platform capabilities
-* Log into Argo CD and understand the app-of-apps deployment pattern and it's use of RBAC
+* Log into Argo CD and understand the app-of-apps deployment pattern and its use of RBAC
 * View CI Pipelines in OpenShift and understand that they run as Pods
 
 == Exercise 1: Explore OpenShift

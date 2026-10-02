@@ -4,7 +4,7 @@ A template for creating Red Hat Showroom lab guides and demo content, built with
 
 * 0% cruft
 * Red Hat Demo Platform UI Bundle default
-* Dev Mode extension that displays the asciidoc attributes you have to work with
+* Dev Mode extension that displays the AsciiDoc attributes you have to work with
 
 == Documentation
 

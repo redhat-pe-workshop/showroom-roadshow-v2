@@ -15,7 +15,7 @@ The numbers tell a compelling story about why platform engineering matters:
 [.small]
 --
 ^1^ https://www.atlassian.com/teams/software-development/state-of-developer-experience-2025[The State of Developer Experience in 2025,window=atlassian], Atlassian +
-^2^ http://faros.ai/acceleration-whilash[AI Engineering Report 2026,window=faros], Faros +
+^2^ https://www.faros.ai/research/ai-acceleration-whiplash[AI Engineering Report 2026,window=faros], Faros +
 ^3^ https://platformengineering.org/reports/state-of-platform-engineering-volume-4[State of Platform Engineering Vol. 4,window=platformeng], platformengineering.org, 2025
 --
 
@@ -50,7 +50,7 @@ The platform should make the secure path the easy path -- developers get self-se
 
 You will progressively build Parasol's IDP using a GitOps-driven approach:
 
-. **Explore the application platform** -- See the OpenShift capabilities that form the foundation of internal platform platform
+. **Explore the application platform** -- See the OpenShift capabilities that form the foundation of an internal developer platform
 . **Deploy a Developer Portal** -- Use Argo CD to deploy a minimal instance of Red Hat Developer Hub (based on https://backstage.io/[CNCF's Backstage,window=backstage_docs])
 . **Connect Developer Hub to the platform** -- Add authentication, CI/CD visibility, Kubernetes and JIRA integrations, and OpenShift plugins
 . **Build Context for Agents and Developers** -- Register systems, components, APIs, and documentation in Developer Hub; query them with Lightspeed for Developer Hub via MCP
