@@ -33,7 +33,7 @@ By the end of this module, you will be able to:
 
 Some supporting infrastructure has already been deployed in this OpenShift cluster:
 
-* **OpenVSX server** — preloaded with a curated set of VS Code extensions, ensuring developers only use extensions that have been scanned and approved for enterprise use. Deployed in the https://console-openshift-console.{openshift_cluster_ingress_domain}/k8s/ns/che-openvsx/core{tilde}v1{tilde}Pod[`che-openvsx`,window=che-openvsx] namespace.
+* **Self-hosted https://open-vsx.org/[OpenVSX,window=open-vsx] server** — preloaded with a curated set of VS Code extensions, ensuring developers only use extensions that have been scanned and approved for enterprise use. Deployed in the https://console-openshift-console.{openshift_cluster_ingress_domain}/k8s/ns/che-openvsx/core{tilde}v1{tilde}Pod[`che-openvsx`,window=che-openvsx] namespace.
 
 * **Tekton pipelines for building workspace tooling images** — the images that OpenShift Dev Spaces workspaces run can be fully customized with the coding languages, dependencies, frameworks, and other tools needed by development teams. View the https://console-openshift-console.{openshift_cluster_ingress_domain}/pipelines/ns/workspace-images[Workspace Images Pipeline,window=workspace-image-pipeline]. The image builds rely on the open source https://cekit.io/[CEKIT,window=cekit] project, which allows engineers to use their favorite container build tools without maintaining a fleet of individual Containerfile definitions. View the CEKIT manifests here: https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/workspace-images.git[rhdh/workspace-images,window=gitlab].
 
@@ -221,8 +221,6 @@ podman kill webserver
 You just ran a container inside of the container that your workspace is running in on the OpenShift cluster.
 
 == Exercise 5: Launch the Parasol Insurance application in live reload mode
-
-The configuration for the workspace includes test-containers which enable a developer to locally run enough collaborative services to mimic a production runtime. In this case, when we start the application in live reload mode, it will also start a containerized Kafka broker and Postgres database.
 
 The configuration for the workspace includes test-containers which enable a developer to locally run enough collaborative services to mimic a production runtime. In this case, when we start the application in live reload mode, it will also start a containerized Kafka broker and Postgres database.
 
