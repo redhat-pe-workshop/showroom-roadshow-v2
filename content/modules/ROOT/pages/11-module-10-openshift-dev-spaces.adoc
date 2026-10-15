@@ -266,7 +266,7 @@ Delete the workspace that we just provisioned. We will provision a new instance 
 
 . Look at the left hand nav, and click on the three dots that will appear when you hover your mouse over `parasol-insurance`.
 +
-image::dev-spaces/select-workspace-delete-new.png[Select Workspace to Delete,link=self,window=blank,align="center",width=350,title=Dev Spaces: Select Workspace to Delete]
+image::dev-spaces/select-workspace-delete-new.png[Select Workspace to Delete,link=self,window=blank,align="center",width=700,title=Dev Spaces: Select Workspace to Delete]
 
 . Select *Delete Workspace* from the dropdown.
 
