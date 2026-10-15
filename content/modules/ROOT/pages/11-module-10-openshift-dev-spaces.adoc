@@ -305,7 +305,7 @@ oc patch application openshift-dev-spaces -n openshift-gitops --type merge -p '{
 +
 Switch to the *ArgoCD* tab and note the deployed changes to the `openshift-dev-spaces` application.
 +
-TIP: Click the *Refresh* button if the changes have not applied yet. You should see a "devspaces-user-resource-quota" resource.
+TIP: Click the *Refresh* button if the changes have not applied yet. You should see a "devspaces-user-resource-limits" resource.
 +
 image::dev-spaces/guardrails-applied.png[Apply Dev Spaces Guardrails,link=self,window=blank,align="center",width=700,title=Dev Spaces: Apply Dev Spaces Guardrails]
 
@@ -313,7 +313,7 @@ image::dev-spaces/guardrails-applied.png[Apply Dev Spaces Guardrails,link=self,w
 +
 image::dev-spaces/view-resource-quotas.png[Resource Quotas,link=self,window=blank,align="center",width=700,title=Dev Spaces: Resource Quotas]
 
-. Click on *devspaces-user-resource-quota* to view the quotas configured on your Dev Spaces namespace.
+. Click on *devspaces-user-resource-limits* to view the quotas configured on your Dev Spaces namespace.
 +
 image::dev-spaces/resource-quotas.png[View Dev Spaces Guardrails,link=self,window=blank,align="center",width=700,title=Dev Spaces: View Dev Spaces Guardrails]
 
@@ -395,7 +395,7 @@ image::dev-spaces/kilo-code-session.png[Kilo Code,link=self,window=blank,align="
 +
 [source,bash,subs="attributes+"]
 ----
-Explain the application that is defined in this project.
+Explain the application that is defined in this project, by analyzing the Java source code, dependencies, and README
 ----
 
 . You should see a response similar to the following image:
@@ -416,7 +416,7 @@ image::dev-spaces/kilo-agent.png[Kilo Agent,link=self,window=blank,align="center
 +
 [source,bash,subs="attributes+"]
 ----
-Explain the application that is defined in this project.
+Explain the application that is defined in this project, by analyzing the Java source code, dependencies, and README
 ----
 
 . Observe the output:
