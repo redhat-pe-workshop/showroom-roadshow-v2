@@ -31,6 +31,8 @@ By the end of this module, you will be able to:
 
 == Exercise 1: Review the Dev Spaces configuration
 
+NOTE: This module requires you to log in to GitLab and OpenShift (using the `developers` IDP). Use username `pe1` and password `{common_password}` for both.
+
 Some supporting infrastructure has already been deployed in this OpenShift cluster:
 
 * **Self-hosted https://open-vsx.org/[OpenVSX,window=open-vsx] server** — preloaded with a curated set of VS Code extensions, ensuring developers only use extensions that have been scanned and approved for enterprise use. Deployed in the https://console-openshift-console.{openshift_cluster_ingress_domain}/k8s/ns/che-openvsx/core{tilde}v1{tilde}Pod[`che-openvsx`,window=che-openvsx] namespace.
@@ -40,9 +42,6 @@ Some supporting infrastructure has already been deployed in this OpenShift clust
 A git repository has been pre-created with the Dev Spaces configuration that we will deploy in this module.
 
 . Open the https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-dev-spaces-config.git[rhdh/ocp-pe-wkshp-dev-spaces-config,window=gitlab] GitLab repository.
-
-+
-NOTE: If prompted to log in to GitLab, use username `pe1` and password `{common_password}`.
 
 . Navigate to the *base/* folder and review the `checluster.yaml` file — this is used to configure an instance of Red Hat OpenShift Dev Spaces. Note the _kustomization.yaml_ file as well; we will leverage Kustomize to add additional configuration later in this module.
 
@@ -56,7 +55,7 @@ TIP: The `checluster.yaml` file has inline comments that explain specific sectio
 git clone https://gitlab-gitlab.{openshift_cluster_ingress_domain}/rhdh/ocp-pe-wkshp-dev-spaces-config
 oc kustomize ocp-pe-wkshp-dev-spaces-config/base
 ----
-+
+
 The rendered CheCluster could be applied to OpenShift using `oc apply -k`, but in your case Argo CD will take care of that.
 
 == Exercise 2: Deploy an instance of OpenShift Dev Spaces
